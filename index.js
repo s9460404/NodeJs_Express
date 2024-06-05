@@ -75,8 +75,8 @@ app.get('/Travel', async (req, res) => {
 
     let driver = await new webdriver.Builder().forBrowser("chrome").build();
     const web = 'https://www.google.com/';//填寫你想要前往的網站
-    driver.get(web);
-    driver.quit();
+    await driver.get(web);
+    await driver.quit();
     res.sendFile( __dirname + '/views/Travel.html');
 });
 
