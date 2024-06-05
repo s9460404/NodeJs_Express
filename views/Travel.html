@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatroom</title>
+    <link type="text/css" rel="stylesheet" href="/chat.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap" rel="stylesheet">        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/zh-tw.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #6a11cb;
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            /*background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));*/
+            background: -webkit-linear-gradient(to right, rgba(220, 181, 255, 0.9), rgba(132, 193, 255, 0.9));
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            /*background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));*/
+            background: linear-gradient(to right, rgba(220, 181, 255, 0.9), rgba(132, 193, 255, 0.9));
+        }
+        
+        .error {
+          border: red solid 1px;
+          color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <!--navbar-->
+    <nav class="navbar navbar-expand-lg navbar-light gradient-custom">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Project</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <!--<li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>-->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Mongodb
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/Chatroom">ChatRoom</a></li>
+                  <li><a class="dropdown-item" href="/Travel">Travel Accommodation Website</a></li>
+                  <!--<li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Vue.js
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/">Test</a></li>
+                  <!--<li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+                </ul>
+              </li>
+              <!--<li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li>-->
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+    </nav>
+    <div id="app">
+        {{ message }}
+    </div>
+    
+    <div id="app2"> 
+        單價: {{ price }}, 
+        數量: {{ quantity }}, 
+        總金額共 {{ price * quantity }} 元 
+    </div>
+
+    <div id="app3"> 
+        Name: {{name}}
+    </div>
+
+    <div id="app4">
+        <input type="text" v-model="name">
+    </div>
+
+    <div id="app5">
+        <input type="text" v-model="name">
+    </div>
+
+    <div id="app6">
+    </div>
+
+    <div id="app7">
+      <p>1.總金額共 {{subtotal()}} 元</p>
+      <p>2.總金額共 {{subtotal()}} 元</p>
+      <p>3.總金額共 {{test()}} 元</p>
+      <p>1.總金額共 {{subtotalComputed}} 元</p>
+      <p>1.總金額共 {{subtotalComputed}} 元</p>
+    </div>
+
+    <div id="app8">
+      <p>1 日幣 = 0.278 台幣</p>
+      <div>台幣 <input type="text" v-model="twd" ></div>
+      <div>日幣 <input type="text" v-model="jpy" ></div>
+      <div>美金 <input type="text" v-model="usd" ></div>
+    </div>
+
+    <div id="app9">
+      <p v-bind:id="testid">testid</p>
+    </div>
+
+    <div id="app10">
+      <button v-bind:disabled="testdis">click me</button>
+    </div>
+
+    <div id="app11">
+      <input v-model="message">
+      <p>Message is {{message}}</p>
+    </div>
+
+    <div id="app12">
+      <div>
+        <input type="radio" id="one" value="1" v-model="picked">
+        <label >One</label>
+      </div>
+      <div>
+        <input type="radio" id="two" value="2" v-model="picked">
+        <label >Two</label>
+      </div>
+      <span>Picked: {{picked}}</span>
+    </div>
+
+    <div id="app13">
+      <!-- 注意下面 input 對應的都是 v-model="checkedNames"  -->
+      <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+      <label for="jack">Jack</label>
+      
+      <input type="checkbox" id="john" value="John" v-model="checkedNames">
+      <label for="john">John</label>
+      
+      <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+      <label for="mike">Mike</label>
+      
+      <input type="checkbox" id="mary" value="Mary" v-model="checkedNames">
+      <label for="mary">Mary</label>
+    
+      <br>
+      <p>Checked names: {{ checkedNames }}</p>
+    </div>
+
+    <div id="app14">
+      <!-- 注意，v-model 要放在 select 而不是 option -->
+      <select v-model="selected">
+        <option disabled value="">請選擇</option>
+        <option>台北市</option>
+        <option>新北市</option>
+        <option>基隆市</option>
+      </select>
+      
+      <p>Selected: {{ selected || '未選擇' }}</p>
+    </div>
+
+    <div id="app15">
+      <input v-model.lazy="msg">
+      <p>{{msg}}</p>
+    </div>
+
+    <div id="app16">
+      <input v-model.number="num1"> + 
+      <input v-model.number="num2"> = {{ sum }}
+    </div>
+
+    <div id="app17">
+      <div v-text="text">World</div>
+      <div>{{text}} World</div>
+    </div>
+
+    <div id="app18">
+      <div v-html="text"></div>
+    </div>
+
+    <div id="app19">
+      <div v-pre>{{text}}</div>
+    </div>
+
+    <div id="app20">
+      <input type="text" v-model.trim="message" v-bind:class="{ 'error': message.length > 10 }">
+    </div>
+
+    <div id="app21">
+      <p>Count: {{count}}</p>
+      <button v-on:click="count++">Plus</button>
+    </div>
+
+    <div id="app22">
+      <p><input v-model.number="amount"></p>
+      <p>Count: {{count}}</p>
+      <button v-on:click="plus(amount,$event)">Plus</button>
+    </div>
+
+    <div id="app23">
+      <label>{{isshow}}</label>
+      <input type="checkbox" v-model="isshow">
+      <template v-if="isshow === true">
+        <h1>Title A</h1>
+      </template>
+      <template v-else>
+        <h1>Title B</h1>
+      </template>
+    </div>
+
+    <div id="app24">
+      <label>
+        <input type="radio" value="username" v-model="loginType"> Username
+      </label>
+      <label>
+        <input type="radio" value="email" v-model="loginType"> Email
+      </label>
+      <hr>
+      <template v-if="loginType === 'username'">
+        <label>Username</label>
+        <input type="text">
+      </template>
+      <template v-else>
+        <label>Email</label>
+        <input type="text">
+      </template>
+    </div>
+
+    <div id="app25">
+      <ul>
+        <li v-for="item in arr">{{item}}</li>
+      </ul>
+      <ul>
+        <li v-for="(item, index) in arr">[{{index}}] >> {{item}}</li>
+      </ul>
+    </div>
+
+    <div id="app26">
+      <ul>
+        <li v-for="(val, key, index) in book">[{{index}}]/[{{key}}] >> {{val}}</li>
+      </ul>
+    </div>
+
+    <div id="app27">
+      <ul class="pagination">
+        <li class="page-item" @click.prevent><a class="page-link" href>&lt;</a></li>
+        <li class="page-item" v-for="page in 10" @click.prevent>
+          <a class="page-link" href>{{ page }}</a>
+        </li>
+        <li class="page-item" @click.prevent><a class="page-link" href>&gt;</a></li>
+      </ul>
+    </div>
+
+    <script>
+      Vue.createApp({
+        
+      }).mount("#app28");
+      Vue.createApp({
+        data(){
+          return{
+            book:{
+              "title": "asda",
+              "auth": "zxczx"
+            }
+          }
+        }
+      }).mount("#app26");
+      Vue.createApp({
+        data(){
+          return{
+            arr: [1,2,3,4]
+          }
+        }
+      }).mount("#app25");
+      Vue.createApp({
+        data(){
+          return{
+            loginType: "username"
+          }
+        }
+      }).mount("#app24");
+      Vue.createApp({
+        data(){
+          return{
+            isshow: true
+          }
+        }
+      }).mount("#app23");
+      Vue.createApp({
+        data(){
+          return{
+            amount: 0,
+            count: 0
+          }
+        },
+        methods:{
+          plus (amount,event){
+            console.log(event.target.tagName);
+            this.count += amount;
+          }
+        }
+      }).mount("#app22");
+      Vue.createApp({
+        data(){
+          return{
+            count: 0
+          }
+        }
+      }).mount("#app21");
+      Vue.createApp({
+        data(){
+          return{
+            message: ''
+          }
+        }
+      }).mount("#app20")
+      Vue.createApp({
+        data(){
+          return{
+            text:"hello"
+          }
+        }
+      }).mount("#app19")
+      Vue.createApp({
+        data(){
+          return{
+            text: "<h1>asdf</h1>"
+          }
+        }
+      }).mount("#app18");
+      Vue.createApp({
+        data(){
+          return{
+            text: "hello"
+          }
+        }
+      }).mount("#app17");
+      Vue.createApp({
+        data () {
+          return {
+            num1: 0,
+            num2: 0,
+          }
+        },
+        computed: {
+          sum() {
+            return this.num1 + this.num2;
+          }
+        }
+      }).mount('#app16');
+      Vue.createApp({
+        data(){
+          return{
+            msg: "123"
+          }
+        }
+      }).mount("#app15");
+      Vue.createApp({
+        data () {
+          return {
+            selected: ''
+          }
+        }
+      }).mount('#app14');
+        Vue.createApp({
+          data () {
+            return {
+              checkedNames: []
+            }
+          }
+        }).mount('#app13');
+        Vue.createApp({
+          data(){
+            return{
+              picked: 1
+            }
+          }
+        }).mount("#app12");
+        Vue.createApp({
+          data(){
+            return{
+              message: "Hello"
+            }
+          }
+        }).mount("#app11");
+
+        Vue.createApp({
+          data(){
+            return{
+              testdis: true
+            }
+          }
+        }).mount("#app10");
+
+        Vue.createApp({
+          data(){
+            return{
+              testid: "123456"
+            }
+          }
+        }).mount("#app9");
+
+        Vue.createApp({
+          data(){
+            return{
+              twd: 0.278,
+            }
+          },
+          computed: {
+            jpy: {
+              get (){
+                return Number.parseFloat(Number(this.twd) / 0.278).toFixed(3);
+              },
+              set (val){
+                this.twd = Number.parseFloat(Number(val) * 0.278).toFixed(3);
+              }
+            },
+            usd: {
+              get (){
+                return Number.parseFloat(Number(this.twd) / 28.540).toFixed(3);
+              },
+              set (val){
+                this.twd = Number.parseFloat(Number(val) * 28.540).toFixed(3);
+              }
+            }
+          }
+        }).mount("#app8");
+
+        Vue.createApp({
+          data(){
+            return {
+              price: 100,
+              quantity: 10
+            }
+          },
+          methods: {
+            subtotal: function(){
+              return this.price * this.quantity;
+            },
+            test: function(){
+              return this.subtotal();
+            }
+          },
+          computed: {
+            subtotalComputed: function(){
+              console.log("subtotalComputed");
+              return 100*100;
+            }
+          }
+        }).mount("#app7");
+
+        const vm = Vue.createApp({ 
+            data () { 
+                return { 
+                    message: 'Hello Vue 3.0!' 
+                } 
+            } 
+        }); 
+        // mount 
+        vm.mount('#app');
+
+        Vue.createApp({ 
+            data () { 
+                return { 
+                    price: 100,
+                    quantity: 10
+                } 
+            } 
+        }).mount('#app2');
+
+        const vm3 = Vue.createApp({ 
+            data () { 
+                return { 
+                    name: "wei"
+                } 
+            } 
+        }).mount('#app3');
+        vm3.$data.name = "gang";
+
+        const dataObj = {
+            name: 'asdasd'
+        };
+
+        const aa = Vue.createApp({
+            data () {
+                return {...dataObj}
+            },
+        }).mount('#app4');
+
+        const bb = Vue.createApp({
+            data () {
+                return {...dataObj}
+            },
+        }).mount('#app5');
+        aa.$data.name = "zxczxcz";
+
+        Vue.createApp({
+            template: '<div>{{ greeting }}</div>',
+            data () {
+                return {
+                    greeting: "Hello"
+                }
+            },
+        }).mount('#app6');
+    </script>
+    
+</body>
+</html>
