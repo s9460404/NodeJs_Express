@@ -272,10 +272,174 @@
       </ul>
     </div>
 
+    <div id="app28"> 
+      <!-- 這是外層元件的 msg -->
+      <h3>{{ msg }}</h3>
+    
+      <!-- 這裡的 v-bind:parent-msg 可以簡寫為 :parent-msg -->
+      <my-component v-bind:parent-msg="msg"></my-component>
+    </div>
+
+    <div id="app29">
+      <h3>Root Instance</h3>
+    
+      <!-- 在根實體使用自訂元件 -->
+      <child-comp></child-comp>
+      <child-comp></child-comp>
+    </div>
+
+    <div id="app30">
+      <h3>123456</h3>
+      <my-component></my-component>
+    </div>  
+
+    <div id="app31">
+      <media-block></media-block>
+    </div>
+
+    <div id="app32">
+      <my-test></my-test>
+      <my-test></my-test>
+      <my-test></my-test>
+    </div>
+
+    <div id="app33">
+
+      <ul v-for="book in books" class="book">
+        <li>{{ book.name }}</li>
+        <li>{{ book.author }}</li>
+        <li>{{ book.publishedAt }}</li>
+      </ul>
+  
+      <hr>
+  
+      <my-component
+        v-for="book in books"
+        :name="book.name"
+        :author="book.author"
+        :published-at="book.publishedAt"
+      />
+    </div>
+
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link">asd</button>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+      </li>
+    </ul>
+
+    <sciprt type="text/x-template" id="media-block">
+      <div class="media">
+        <div class="media-body">
+          <h5 class="mt-0">Media heading</h5>
+          <div>
+            Cras sit amet nibh libero,
+          </div>
+        </div>
+      </div>
     <script>
-      Vue.createApp({
+      const app33 = Vue.createApp({
+        data() {
+          return {
+            books: [
+              {
+                name: '0 陷阱！0 誤解！8 天重新認識 JavaScript！',
+                author: 'Kuro Hsu',
+                publishedAt: '2019/09'
+              },
+              {
+                name: '重新認識 Vue.js',
+                author: 'Kuro Hsu',
+                publishedAt: '2021/02'
+              },
+            ]
+          }
+        }
+      });
+
+      app33.component('my-component', {
+        template: `
+        <div class="child-app">
+            <div>書名: <input type="text" v-model="name"></div>
+            <div>作者: <input type="text" v-model="author"></div>
+            <div>出版日: <input type="text" v-model="publishedAt"></div>
+        </div>`,
+        props: ['name', 'author', 'published-at'],
+      });
+
+      app33.mount('#app33');
+      const app32 = Vue.createApp({});
+      app32.component('my-test',{
+        template:
+        `<div class="data-block">
+          <div>Count: {{count}}</div>
+          <button @click="count++">Plus</button>
+        </div>`,
+        data: function(){
+          return {
+            count: 0
+          }
+        }
+      })
+      app32.mount("#app32");
+      const app31 = Vue.createApp({
         
-      }).mount("#app28");
+      })
+      app31.component('media-block',{
+        template: '#media-block'
+      })
+
+      const app30 = Vue.createApp({
+        components:{
+          'my-component': {
+            template: '<div>Hello Vue!</div>'
+          }
+        }
+      }).mount("#app30");
+      const app29 = Vue.createApp({
+        
+      });
+      // 子元件
+      app29.component('child-comp', {
+        template: `
+          <div class="app-child">
+            <div>Hello Vue!</div>
+          </div>`
+      });
+      app29.mount("#app29");
+      var app28 = Vue.createApp({
+        data() {
+          return {
+            msg: '這是外層元件的 msg'
+          }
+        }
+      });
+
+      app28.component('my-component', {
+        template: `
+          <div class="component">
+            <div> 從 props 來的 parentMsg ==> {{ parentMsg }} </div>
+            <div> 自己的 msg ==> {{ msg }} </div>
+          </div>`,
+        props: ["parentMsg"],
+        data: () => {
+          return {
+            msg: '這是子元件的 msg'
+          }
+        }
+      });
+      app28.mount("#app28");
       Vue.createApp({
         data(){
           return{

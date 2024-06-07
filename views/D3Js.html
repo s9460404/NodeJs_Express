@@ -13,7 +13,9 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/zh-tw.js'></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.js"></script>
     <style>
         .gradient-custom {
             /* fallback for old browsers */
@@ -43,9 +45,6 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              <!--<li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-              </li>-->
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Mongodb
@@ -53,9 +52,6 @@
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item" href="/Chatroom">ChatRoom</a></li>
                   <li><a class="dropdown-item" href="/Travel">Travel Accommodation Website</a></li>
-                  <!--<li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>-->
                 </ul>
               </li>
               <li class="nav-item dropdown">
@@ -65,15 +61,8 @@
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item" href="/Test">Test</a></li>
                   <li><a class="dropdown-item" href="/ChartJs">ChartJs</a></li>
-                  <li><a class="dropdown-item" href="/D3Js">D3Js</a></li>
-                  <!--<li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>-->
                 </ul>
               </li>
-              <!--<li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-              </li>-->
             </ul>
             <form class="d-flex">
               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -82,9 +71,47 @@
           </div>
         </div>
     </nav>
-    
+    <!--navbar-->
+
+    <br>
+    <div class="container">
+        <!--<div class="row">
+            <div class="col-6" id="test"></div>
+            <div class="col-6"><canvas id="myChart2" style="width:100%;max-width:500px"></canvas></div>
+        </div>-->
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-10"><img src="/1717747564071.jpg" width="686" height="495"></div>
+        </div>
+        <div class="row">
+            <div class="col-6" id="test"></div>
+            <div class="col-6"><canvas id="myChart2" style="width:100%;max-width:500px"></canvas></div>
+        </div>
+    </div>
+    <p>Error: This is error.</p>
+    <p>Warning:This is warning.</p>
+    <p>D3 Tutorials</p>
     <script>
+        var bodyElement = d3.select("#test");
+        var paragraph = bodyElement.append("p");
+        paragraph.text("Hello D3!");
+
+        /*d3.selectAll("p").style("color", function(d, i) {
+            var text = this.innerText;
         
+            if (text.indexOf("Error") >= 0) {
+                return "red";
+            } else if (text.indexOf("Warning") >= 0) {
+                return "yellow";
+            }
+        });*/
+        var data = [1234564, 3, 0, 3];
+    var body = d3.select("body")
+                .selectAll("span")
+                .data(data)
+                .enter()
+                .append("span")
+                .text(function(d,i) { alert(i);return " " + d; });
     </script>
 </body>
 </html>

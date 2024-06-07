@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <title>Test</title>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+        <style>
+                div.container {
+                        width: 80%;
+                }
+        </style>
+</head>
+<body>
+        <div class="container">
+                <div class="row">
+                        <div class="col-4"><input type="file" id="file-input"/></div>
+                </div>
+                <br>
+                <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-2" id="c1"></div>
+                        <div class="col-2" id="c2"></div>
+                        <div class="col-2" id="c3"></div>
+                </div>
+                <div class="row">
+                        <div class="col-2" id="r1"></div>
+                        <div class="col-2" id="r1c1"></div>
+                        <div class="col-2" id="r1c2"></div>
+                        <div class="col-2" id="r1c3"></div>
+                        <div class="col" id="accuracy"></div>
+                </div>
+                <div class="row">
+                        <div class="col-2" id="r2"></div>
+                        <div class="col-2" id="r2c1"></div>
+                        <div class="col-2" id="r2c2"></div>
+                        <div class="col-2" id="r2c3"></div>
+                </div>
+                <div class="row">
+                        <div class="col-2" id="r3"></div>
+                        <div class="col-2" id="r3c1"></div>
+                        <div class="col-2" id="r3c2"></div>
+                        <div class="col-2" id="r3c3"></div>
+                </div>
+                <br>
+                <div class="row">
+                        <div class="col" id="table_space">
+                                
+                        </div>
+                </div>
+        </div>
+</body>
+<script>
+        async function readSingleFile(e) {
+            var file = e.target.files[0];
+            if (!file) {
+                return;
+            }
+            
+            let formData = new FormData();
+            formData.append('clientFile', file);
+            formData.append('kind', "result");
+            
+            const options = {
+                method: "POST",
+                headers: {
+                    //"Content-Type": "application/json",
+                    //"Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                },
+                //body: JSON.stringify(data),
+                //body: file,
+                body: formData,
+            };
+    
+            const response = await fetch("/submit", options);
+            const json = await response.json();
+            //console.log(json);
+           
+            var table = document.getElementById("excel");
+            if( table == undefined ){
+                var cc = document.getElementById("table_space");
+
+                var c1 = document.getElementById("c1");
+                var c2 = document.getElementById("c2");
+                var c3 = document.getElementById("c3");
+                var r1 = document.getElementById("r1");
+                var r2 = document.getElementById("r2");
+                var r3 = document.getElementById("r3");
+                c1.innerText = "true_loyal";
+                c2.innerText = "true_partial churn";
+                c3.innerText = "true_churn";
+                r1.innerText = "pre_loyal";
+                r2.innerText = "pre_partial churn";
+                r3.innerText = "pre_churn";
+
+                var r1c1 = document.getElementById("r1c1");
+                var r1c2 = document.getElementById("r1c2");
+                var r1c3 = document.getElementById("r1c3");
+                r1c1.innerText = json["matrix"]["1"]
+                r1c2.innerText = json["matrix"]["2"]
+                r1c3.innerText = json["matrix"]["3"]
+                var r2c1 = document.getElementById("r2c1");
+                var r2c2 = document.getElementById("r2c2");
+                var r2c3 = document.getElementById("r2c3");
+                r2c1.innerText = json["matrix"]["4"]
+                r2c2.innerText = json["matrix"]["5"]
+                r2c3.innerText = json["matrix"]["6"]
+                var r3c1 = document.getElementById("r3c1");
+                var r3c2 = document.getElementById("r3c2");
+                var r3c3 = document.getElementById("r3c3");
+                r3c1.innerText = json["matrix"]["7"]
+                r3c2.innerText = json["matrix"]["8"]
+                r3c3.innerText = json["matrix"]["9"]
+
+                var accuracy = document.getElementById("accuracy");
+                accuracy.innerText = "準確率: " + json["accuracy"]
+
+                var table = document.createElement("table");
+                table.setAttribute("class", "display");
+                table.id = "excel";
+                cc.appendChild(table);
+                const newtable = $('#excel').DataTable({
+                        "data": json["data"],
+                        "columns": [
+                                { data: 'label_x', title: "label_x"},
+                                //{ data: 'number', title: "number"},
+                                { data: '會員編號', title: "會員編號"},
+                                { data: 'label_y', title: "label_y"},
+                        ],
+                        "searching": false,
+                        "ordering": false,
+                })
+            }
+            else{
+                alert("比對失敗");
+            }
+        }
+        
+        document.getElementById('file-input').addEventListener('change', readSingleFile);
+</script>
+</html>

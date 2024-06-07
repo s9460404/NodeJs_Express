@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatroom</title>
+    <link type="text/css" rel="stylesheet" href="/chat.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap" rel="stylesheet">        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/zh-tw.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <style>
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #6a11cb;
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            /*background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));*/
+            background: -webkit-linear-gradient(to right, rgba(220, 181, 255, 0.9), rgba(132, 193, 255, 0.9));
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            /*background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));*/
+            background: linear-gradient(to right, rgba(220, 181, 255, 0.9), rgba(132, 193, 255, 0.9));
+        }
+    </style>
+</head>
+<body>
+
+    <!--navbar-->
+    <nav class="navbar navbar-expand-lg navbar-light gradient-custom">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Project</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Mongodb
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/Chatroom">ChatRoom</a></li>
+                  <li><a class="dropdown-item" href="/Travel">Travel Accommodation Website</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Vue.js
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/Test">Test</a></li>
+                  <li><a class="dropdown-item" href="/ChartJs">ChartJs</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+    </nav>
+    <!--navbar-->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6"><canvas id="myChart" style="width:100%;max-width:500px"></canvas></div>
+            <div class="col-6"><canvas id="myChart2" style="width:100%;max-width:500px"></canvas></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><canvas id="myChart3" style="width:100%;max-width:500px"></canvas></div>
+            <div class="col-6"><canvas id="myChart4" style="width:100%;max-width:500px"></canvas></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><canvas id="myChart5" style="width:100%;max-width:500px"></canvas></div>
+            <div class="col-6"><canvas id="myChart6" style="width:100%;max-width:500px"></canvas></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><canvas id="myChart7" style="width:100%;max-width:500px"></canvas></div>
+            <div class="col-6"><canvas id="myChart8" style="width:100%;max-width:500px"></canvas></div>
+        </div>
+    </div>
+    
+    <script>
+        var xyValues = [
+            {x:50, y:7},
+            {x:60, y:8},
+            {x:70, y:8},
+            {x:80, y:9},
+            {x:90, y:9},
+            {x:100, y:9},
+            {x:110, y:10},
+            {x:120, y:11},
+            {x:130, y:14},
+            {x:140, y:14},
+            {x:150, y:15}
+        ];
+
+        new Chart("myChart", {
+            type: "scatter",
+            data: {
+                datasets: [{
+                    pointRadius: 4,
+                    pointBackgroundColor: "rgba(0,0,255,1)",
+                    data: xyValues,
+                    label: 'test',
+                }]
+            },
+            options: {
+                //legend: {display: false},
+                scales: {
+                xAxes: [{ticks: {min: 40, max:160}}],
+                yAxes: [{ticks: {min: 6, max:16}}],
+                }
+            }
+        });
+        xValues = [50,60,70,80,90,100,110,120,130,140,150];
+        yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+        new Chart("myChart2", {
+            type: "line",
+            data: {
+                labels: xValues,
+                    datasets: [{
+                    fill: false, //線下部分顏色填滿
+                    lineTension: 0, //直線
+                    backgroundColor:"rgba(0,0,255,1.0)",
+                    borderColor: "rgba(0,0,255,0.1)",
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: {display: false},
+                scales: {
+                yAxes: [{ticks: {min: 6, max:16}}],
+                }
+            }
+        });
+
+        xValues = [100,200,300,400,500,600,700,800,900,1000];
+        new Chart("myChart3", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
+                data: [860,1140,1060,1060,1070,1110,1330,2210,7830,2478],
+                borderColor: "red",
+                fill: false
+                },{
+                data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+                borderColor: "green",
+                fill: false
+                },{
+                data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+                borderColor: "blue",
+                fill: false
+                }]
+            },
+            options: {
+                legend: {display: false}
+            }
+        });
+
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = ["red", "green","blue","orange","brown"];
+
+        new Chart("myChart4", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+        options: {
+            //legend: {display: false},
+            title: {
+                display: true,
+                text: "World Wine Production 2018"
+            }
+        }
+        });
+
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = ["red", "green","blue","orange","brown"];
+
+        new Chart("myChart5", {
+            type: "horizontalBar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: "World Wine Production 2018"
+                },
+                scales: {
+                    xAxes: [{ticks: {min: 10, max:60}}]
+                }
+            }
+        });
+
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = [
+            "#b91d47",
+            "#00aba9",
+            "#2b5797",
+            "#e8c3b9",
+            "#1e7145"
+        ];
+
+        new Chart("myChart6", {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "World Wide Wine Production 2018"
+                }
+            }
+        });
+
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = [
+            "#b91d47",
+            "#00aba9",
+            "#2b5797",
+            "#e8c3b9",
+            "#1e7145"
+        ];
+
+        new Chart("myChart7", {
+            type: "doughnut",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                title: {
+                display: true,
+                    text: "World Wide Wine Production 2018"
+                }
+            }
+        });
+
+        
+        xValues = ['1月', '2月', '3月', '4月', '5月', '6月'];
+        var myChart8 = new Chart("myChart8", {
+            type: 'bar',
+            data: {
+                labels: xValues,
+                datasets: [
+                    // 第一組資料
+                    {
+                    type: 'line',
+                    // 上方分類文字
+                    label: '月銷售',
+                    // 數據
+                    data: [30, 20, 40, 32, 45, 24],
+                    // 線與邊框顏色
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    // 線的弧度(0-1)，數值愈小線愈直
+                    tension: 0.1,
+                    },
+                    {
+                    type: 'bar',
+                    // 上方分類文字
+                    label: '月銷售',
+                    // 數據
+                    data: [30, 20, 40, 32, 45, 24],
+                    // 線與邊框顏色
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    // 背景顏色
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    },
+                ]
+            }
+        })
+        
+    </script>
+</body>
+</html>

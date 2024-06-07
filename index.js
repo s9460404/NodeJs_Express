@@ -21,6 +21,18 @@ app.get('/', (req, res) => {
     res.sendFile( __dirname + '/views/index.html');
 });
 
+app.get('/test', (req, res) => {
+    res.sendFile( __dirname + '/views/test.html');
+});
+
+app.get('/ChartJs', (req, res) => {
+    res.sendFile( __dirname + '/views/ChartJs.html');
+});
+
+app.get('/D3Js', (req, res) => {
+    res.sendFile( __dirname + '/views/D3Js.html');
+});
+
 app.get('/Travel', async (req, res) => {
     /*
     request({
@@ -73,10 +85,11 @@ app.get('/Travel', async (req, res) => {
         console.log(error);
     });*/
 
+    /*
     let driver = await new webdriver.Builder().forBrowser("chrome").build();
     const web = 'https://www.google.com/';//填寫你想要前往的網站
     await driver.get(web);
-    await driver.quit();
+    await driver.quit();*/
     res.sendFile( __dirname + '/views/Travel.html');
 });
 
