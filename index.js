@@ -7,6 +7,8 @@ const socketController = require(__dirname + '/controllers/socket')(io);
 const Chats = require(__dirname + "/models/chat");
 app.use(express.static('images'));
 app.use(express.static('css'));
+app.use(express.static('views'));
+app.use(express.static('csv'));
 
 const axios = require("axios")
 var request = require("request");
@@ -31,6 +33,14 @@ app.get('/ChartJs', (req, res) => {
 
 app.get('/D3Js', (req, res) => {
     res.sendFile( __dirname + '/views/D3Js.html');
+});
+
+app.get('/D3Js2', (req, res) => {
+    res.sendFile( __dirname + '/views/D3Js2.html');
+});
+
+app.get('/D3Js3', (req, res) => {
+    res.sendFile( __dirname + '/views/D3Js3.html');
 });
 
 app.get('/Travel', async (req, res) => {

@@ -14,8 +14,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.js"></script>
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .gradient-custom {
             /* fallback for old browsers */
@@ -29,6 +29,17 @@
             /*background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));*/
             background: linear-gradient(to right, rgba(220, 181, 255, 0.9), rgba(132, 193, 255, 0.9));
         }
+
+        .selected{
+          fill: blue !important
+        }
+
+        /*.pie {
+            margin: auto;
+            width: 80%;
+            min-width: 200px;
+            margin: auto;
+        }*/
     </style>
 </head>
 <body>
@@ -76,42 +87,1206 @@
     <br>
     <div class="container">
         <!--<div class="row">
+          <div class="col-3"></div>
+          <div class="col-6">
+              <input class="dataChange" type="range" style="width:100% ; cursor:pointer" name="dataChange" min="0" max="10" value="0">
+              <p> data：<span class="showData"></span></p>
+            
+              <div class="example">
+              </div>
+          </div>
+        </div>-->
+        <div class="row">
+          <div class="col-4">
+            <p>line test</p>
+            <svg class="line" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>area test</p>
+            <svg class="area" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>arc test</p>
+            <svg class="arc" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4">
+            <p>axis test</p>
+            <svg class="axis" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>stack test</p>
+            <svg class="stack" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <span>click test</span>
+            <button type="button" class="btn btn-primary changeBtn">改變顏色</button>
+            <svg class="changeColor" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4">
+            <span>delay test</span>
+            <button type="button" class="btn btn-primary delayBtn">delay</button>
+            <svg class="delay" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>transition test</p>
+            <svg class="loopAnimation" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <span>chartContainer test</span>
+            <button type="button" class="btn btn-primary chartContainerBtn">chartContainer</button>
+            <svg class="chartContainer" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4">
+            <p>event test</p>
+            <svg class="event" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>position test</p>
+            <svg class="position" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>tooltips test</p>
+            <div class="tooltip1"></div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4">
+            <p>drag test</p>
+            <svg class="drag" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>force test</p>
+            <svg class="forceElement" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>force test</p>
+            <svg class="forceGroup" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4">
+            <p>force test</p>
+            <svg class="forceLink" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>force test</p>
+            <div class="hoverWrap position-relative">
+              <svg class="forceHover" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey"></svg>
+            </div>
+          </div>
+          <div class="col-4">
+            <p>force test</p>
+            <svg class="forceDrag" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4">
+            <p>force test</p>
+            <svg class="forceDragLink" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>brush test</p>
+            <svg class="brush" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+          <div class="col-4">
+            <p>axis test</p>
+            <svg class="XY_Axis" style="width:100%;height: 200px;border: solid;border-width: 1px;border-color:grey">
+            </svg>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-4">
+              <span class="text-center mt-5">pie test</span>
+              <button type="button" class="btn btn-primary January">1月</button>
+              <button type="button" class="btn btn-primary Feburary">2月</button>
+              <div class="pie"></div>
+            </div>
+            <div class="col-4">
+              <span class="mt-3">台灣縣市2024/02月住宅售電</span>
+              <!--<button class="btn btn-primary Feb">2024/02</button>
+              <button class="btn btn-primary Mar">2024/03</button>-->
+              <div class="chart"></div>
+              <!--<div class="btnWrap"></div>-->
+            </div>
+        </div>
+
+
+        
+        <!--<div class="row">
+            <div class="col-2"></div>
+            <div class="col-10"><img src="/1717747564071.jpg" width="686" height="495"></div>
+        </div>-->
+        <!--<div class="row">
             <div class="col-6" id="test"></div>
             <div class="col-6"><canvas id="myChart2" style="width:100%;max-width:500px"></canvas></div>
         </div>-->
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-10"><img src="/1717747564071.jpg" width="686" height="495"></div>
-        </div>
-        <div class="row">
-            <div class="col-6" id="test"></div>
-            <div class="col-6"><canvas id="myChart2" style="width:100%;max-width:500px"></canvas></div>
-        </div>
     </div>
-    <p>Error: This is error.</p>
-    <p>Warning:This is warning.</p>
-    <p>D3 Tutorials</p>
+    
     <script>
-        var bodyElement = d3.select("#test");
-        var paragraph = bodyElement.append("p");
-        paragraph.text("Hello D3!");
+      /*const dataChange = document.querySelector('.dataChange')
+      const showData = document.querySelector('.showData')
+      let randomData = [] // 先建立空資料陣列
+      dataChange.addEventListener('change', function(){
+        randomData = []  // 每次重選range就清空陣列
+        for(i= 0; i< event.target.value; i++){
+          let random = Math.floor(Math.random() * 5)
+          randomData.push(random) // 塞入隨機亂數資料
+        }
+        showData.innerHTML = randomData
 
-        /*d3.selectAll("p").style("color", function(d, i) {
-            var text = this.innerText;
+        drawDiagram() // 繪製圖表的方法
+      });
+
+      const rangeSelect =  d3.select('.example')
+        .append('svg')
+        .attr('width', 500)
+        .attr('height', 500)
+        .style('border', 'solid')//style="border: solid;border-width: 1px;border-color:red"
+        .style('border-width', '1px')
+        .style('border-color', 'red')
+      const drawDiagram =()=>{
+        // 綁定 update 資料
+        let rects = rangeSelect.selectAll('rect')
+          .data(randomData)
+  
+        // update 更新綁定的資料
+        rects.attr('width', d => d * 60)
+
+        // 用 enter 加上少的DOM元素
+        rects.enter()
+          .append('rect')
+          .attr('width', d => d * 60)
+          .attr('height', 50)
+          .style('fill', 'blue')
+          .attr('x', (d, index) => 0 ) // 設定x位置
+          .attr('y', (d, index) => index * 60) // 設定y軸位置
+
+        // 用 exit 移除多的 DOM 元素
+        rects.exit().remove()
+      }
+*/
+
+      // Line Generator
+      const data1 = [{x:10,y:100},{x:20,y:100},{x:30,y:100},{x:90,y:20},{x:220,y:10}]
+      const line = d3.line()
+                    .x(d=> d.x) // 設定x值要抓哪些資料
+                    .y(d=> d.y) // 設定y值要抓哪些資料
+
+      d3.select('.line')
+        .append('path')
+        .attr('d', line(data1))
+        .attr('stroke', 'black')
+        .attr('stroke-width', '2')
+        .attr('fill', 'none')
+
+      //area
+      const area = d3.area()
+                    .x(d=>d.x)
+                    .y1(d=>d.y)
+                    .y0(10)
+      d3.select('.area')
+        .append('path')
+        .attr('d', area(data1))
+        .attr('stroke', 'blue')
+        .attr('fill', 'blue')
+
+      //arc
+      const arc = d3.arc()
+                    .innerRadius(60)  // 內圈範圍40
+                    .outerRadius(65)  // 內圈範圍50
+                    .startAngle(Math.PI*-0.8)
+                    .endAngle(Math.PI*0.8)
+      d3.select('.arc')
+        .append("g")
+        .attr("transform", "translate(150,80)")  // 把整個圓弧移動到 100,100 的位置
+        .append('path')
+        .attr('d', arc())
+        .attr('stroke', 'blue')
+        .attr('fill', 'blue')
+
+      //axis
+      // 抓出 x 軸要使用的值
+      const xData = data1.map((i) => i.x);
+
+      // 設定X軸的比例尺與繪製範圍
+      const xScale = d3.scaleLinear()
+                      .domain([0, d3.max(xData)])
+                      .range([10, 220]);
+
+      //使用xScale的設定，繪製刻度(ticks)朝下的軸線
+      const xAxis = d3
+                      .axisBottom(xScale)
+
+      // 呼叫軸線
+      d3.select('.axis').append("g").call(xAxis).attr("transform", "translate(0,170)")  // 調整X軸位置;
+
+      // stack
+      const dataStack = [
+        {month: new Date(2021, 0, 1), China: 132, America: 80, Taiwan: 30},
+        {month: new Date(2021, 1, 1), China: 67, America: 27, Taiwan: 188},
+        {month: new Date(2021, 2, 1), China: 123, America: 153, Taiwan: 18},
+        {month: new Date(2021, 3, 1), China: 27, America: 112, Taiwan: 20}
+      ];
+
+      const stack = d3.stack()
+                      .keys(['China', 'America', 'Taiwan'])
+
+      const stackedSeries = stack(dataStack);
+      console.log(stackedSeries)
+
+      // 顏色
+      const colorScale = d3.scaleOrdinal()
+                          .domain(['China', 'America', 'Taiwan'])
+                          .range(["red", "blue", "orange"])
+
+      // 建立集合元素g、設定顏色
+      const g = d3.select('.stack')
+                  .attr('width', 300)
+                  .selectAll('g')
+                  .data(stackedSeries)
+                  .enter()
+                  .append('g')
+                  .attr('fill', d => colorScale(d.key));
+      
+      // 繪製長條圖
+      g.selectAll('rect')
+        .data(d=>d)
+        .join('rect')
+        .attr('width', d => d[1] - d[0]) // 長度為終點值減掉起始值
+        .attr('x', d => d[0]) // x 座標設定為起始值
+        .attr('y', (d, i) => i *30) // y 座標用 index 來處理，乘上每條bar想拉開的距離
+        .attr('height', 20);
+
+      // 改變顏色
+      const round = d3.select('.changeColor')
+                      .append('circle')
+                      .attr('cx', 100)
+                      .attr('cy', 50)
+                      .attr('r', 25)
+                      .attr('fill', 'orange')
+                      .attr('stroke-width', '0.5px')
+                      .attr('stroke', 'black')
+
+      document.querySelector('.changeBtn').addEventListener('click', function(){
+          round.transition()
+              .duration(1000)
+              .attr('fill', 'green')
+              .attr('stroke-width', '6px')
+              .attr('stroke', 'red')
+      })
+
+      const dataDelay = [160, 140, 120, 100, 80, 60 ,40 ,20]
+      const delay = d3.select('.delay')
+                      .selectAll('circle')
+                      .data(dataDelay)
+                      .enter()
+                      .append('circle')
+                      .attr('cx', d => d)
+                      .attr('cy', 30)
+                      .attr('r', 15)
+                      .attr('fill', 'blue')
+                      .attr('opacity', '0.5')
+
+      document.querySelector('.delayBtn').addEventListener('click', function(){
+        delay.transition()
+            .delay((d,i)=> i*200) // 分別延遲
+            .attr('cx', d => d+120) // 位移距離
+      })
+
+      const loop = d3.select('.loopAnimation')
+                    .append('circle')
+                    .attr('cx', 50)
+                    .attr('cy', 50)
+                    .attr('r', 25)
+                    .attr('fill', 'blue')
+                    .transition()
+                    .duration(2000)
+                    .on('start', goRight)
+
+      function goRight(){
+        d3.active(this)
+          .attr('cx', 200)
+          .transition()
+          .on("start", goLeft);
+      }
+
+      function goLeft (){
+        d3.active(this)
+          .attr('cx', 50)
+          .transition()
+          .on("start", goRight)
+      }
+
+      let data_1 = [150, 122, 133, 161, 116, 139, 143, 115, 193, 137, 122, 141];
+      let data_2 = [180, 146, 180, 172, 133, 149, 152, 138, 188, 192, 117, 146];
+      let n = data_1.length, //資料點的數量
+      mx = d3.max(d3.merge([data_1, data_2])) //抓兩個陣列的最大值
+
+      const svg = d3.select('.chartContainer')
+      svg.attr('width', 500)
+         .attr('height', 300);
+      svg.selectAll('rect')
+        .data(data_1)
+        .enter()
+        .append('rect')
+        .attr('x', 0)
+        .attr('y', (d, i) => i * 30)
+        .attr('width', (d, i) => d)
+        .attr('height', 20)
+        .attr('fill', 'orange')
+
+      document.querySelector('.chartContainerBtn').addEventListener('click', function(){
+        svg.selectAll('rect')
+              .data(data_2) // 資料變化
+              .transition() // 加上動畫
+              .duration(1000) //點擊之後每個 bar 會在1秒內到達更新位置
+              .delay((d, i) => 200 * i) //每個bar在分別delay後才開始動畫，
+              // delay 時間乘上index，做出從上至下更新的動畫效果
+              .attr('width', (d, i) => d)
+              .attr('fill', '#66f9ff')
+      })
+
+      d3.select('.event')
+        .append('rect')
+        .attr('class', 'rect')
+        .attr('width', 30)
+        .attr('height', 30)
+        .attr('fill', 'blue')
+        .append('rect')
+
+      // 加上事件
+      d3.select('.rect')
+        .on('click', function(){
+            d3.select(this)
+              .transition()
+              .attr('cursor', 'pointer')
+              .attr('fill', 'green')
+              .attr('transform', 'translate(250, 0)')
+      })
+
+      const position_data = [130, 210, 90, 250]
+      var svg2 = d3.select('.position');
+        svg2.attr('width', 500)
+          .attr('height', 300);
+
+      const dots = svg2.selectAll('circle')
+                     .data(position_data)
+                     .enter()
+                     .append('circle')
+                     .attr('cx', d=>d)
+                     .attr('cy', (d,i)=>(i+1)*60)
+                     .attr('r', '15')
+                     .attr('fill', 'blue')
+                     .attr('cursor', 'pointer')
+
+      // 綁定事件
+      dots.on('mouseover', function(){
+          let pt = d3.pointer(event, event.target)
+          d3.select(this)
+            .attr('fill', 'red')
+            .transition()
+            .attr('cx', pt[0]+100)
+
+      });
+
+      const tooltipsData =[
+        {'r': 17 , 'x': 13, y: 181, 'color':'red'},
+        {'r': 23 , 'x': 29, y: 131, 'color':'yellow'},
+        {'r': 14 , 'x': 84, y: 273, 'color':'orange'},
+        {'r': 9 , 'x': 323, y: 59, 'color':'blue'},
+        {'r': 18 , 'x': 172, y: 251, 'color':'green'},
+        {'r': 26 , 'x': 404, y: 154, 'color':'pink'}
+      ]
+      d3.select('.tooltip1').style('position', 'relative')
+      const svg3 = d3.select('.tooltip1')
+                      .append('svg')
+                      //.attr('width', 500)
+                      //.attr('height', 300)
+                      .style('width', "100%")
+                      .style('height', "200px")
+                      .style('border', "solid")
+                      .style('border-width', "1px")
+                      .style('border-color', "grey")
+                      .selectAll('circle')
+                      .data(tooltipsData)
+                      .enter()
+                      .append('circle')
+                      .attr('r', d => d.r)
+                      .attr('cx', d => d.x)
+                      .attr('cy', d => d.y)
+                      .attr('fill', d => d.color)
+                      .style('cursor', 'pointer');
+      // 創建tooltip
+      const tooltips = d3.select(".tooltip1")
+                    .append("div")
+                    .style("opacity", 0)
+                    .style('position', 'absolute')
+                    .attr("class", "tooltip")
+                    .style("background-color", "white")
+                    .style("border", "solid")
+                    .style("border-width", "2px")
+                    .style("border-radius", "5px")
+                    .style("padding", "5px")
         
-            if (text.indexOf("Error") >= 0) {
-                return "red";
-            } else if (text.indexOf("Warning") >= 0) {
-                return "yellow";
-            }
-        });*/
-        var data = [1234564, 3, 0, 3];
-    var body = d3.select("body")
-                .selectAll("span")
-                .data(data)
+      // 加上滑鼠事件
+      svg3.on('mouseover', function(){
+          tooltips.style("opacity", 1)
+        })
+        .on('mousemove', function(d){
+          let pt = d3.pointer(event, this)
+          console.log(pt);
+          tooltips.style("opacity", 1)
+                  .html('圓半徑：' + d.target.__data__.r)
+                  .style('left', pt[0]+30+'px')
+                  .style('top', pt[1]+'px')
+        })
+        .on('mouseleave', function(){ //設定滑鼠離開時tooltips隱藏
+          tooltips.style("opacity", 0)
+      });
+
+      const drag_data = [{name:'A', x:200, y:340},
+              {name:'B', x:220, y:30},
+              {name:'C', x:25, y:19},
+              {name:'D', x:36,y:150},
+              {name:'E', x:160, y:15},
+              {name:'F', x:75, y:36},
+              {name:'G', x:187, y:100}]
+
+      const svg4 = d3.select('.drag')
+        
+      // 建立圓點
+      const dots2 = svg4.append('g')
+                .selectAll('circle')
+                .data(drag_data)
                 .enter()
-                .append("span")
-                .text(function(d,i) { alert(i);return " " + d; });
+                .append('circle')
+                .attr('r', 25)
+                .attr('cx', d=>d.x)
+                .attr('cy', d=>d.y)
+                .style("fill", "#19d3a2")
+                .style("fill-opacity", 0.3)
+                .attr("stroke", "#b3a2c8")
+                .style("stroke-width", 4)
+                .style('cursor', 'pointer')
+
+      // 建立拖曳方法
+      const drag = d3.drag()
+               .on('start', function(){
+                  d3.select(this)
+                    .style('stroke', 'blue')
+                 })
+               .on('drag', function(){
+                  let pt = d3.pointer(event, this)
+                  d3.select(this)
+                    .attr('cx', pt[0])
+                    .attr('cy', pt[1])
+                 })
+                .on('end', function(){
+                  d3.select(this)
+                    .style('stroke', '#b3a2c8')
+                 });
+
+      dots2.call(drag);
+
+      const force_data = [{name:'A'},{name:'B'},{name:'C'},{name:'D'},{name:'E'},{name:'F'},{name:'G'}]
+      const dots3 =  d3.select('.forceElement')
+                    .append('g')
+                    .selectAll('circle')
+                    .data(force_data)
+                    .enter()
+                    .append('circle')
+                    .attr('cx', 175)
+                    .attr('cy', 100)
+                    .attr('r', 15)
+                    .style('fill', 'green')
+                    .style('opacity', 0.4)
+
+      // 設定力模擬
+      const simulation = d3.forceSimulation()
+      .alphaDecay(0) // 收斂永不停止
+      .velocityDecay(0.2) // 設定摩擦係數
+      .force("x", d3.forceX()) // 設定Ｘ軸平移位置
+      .force("y", d3.forceY()) // 設定Ｙ軸移動位置
+      // 設定中心點位置
+      .force("center", d3.forceCenter().x(250).y(150)) 
+      // 設定節點間電荷力
+      .force("charge", d3.forceManyBody().strength(1))
+      // 設定節點間彼此的互斥力
+      .force("collide", d3.forceCollide().strength(0.1).radius(40).iterations(0.2))
+
+      simulation.nodes(force_data)
+          .on("tick", function(d){
+             dots3.attr("cx", d => d.x)
+                 .attr("cy", d => d.y)
+            });
+
+      const forceGroup_data = [
+        { "name": "A", "group": 100 },
+        { "name": "B", "group": 100 },
+        { "name": "C", "group": 100 },
+        { "name": "D", "group": 100 },
+        { "name": "E", "group": 100 },
+        { "name": "F", "group": 100 },
+        { "name": "G", "group": 200 },
+        { "name": "H", "group": 200 },
+        { "name": "I", "group": 200 },
+        { "name": "J", "group": 200 },
+        { "name": "K", "group": 200 },
+        { "name": "L", "group": 300 },
+        { "name": "M", "group": 300 },
+        { "name": "N", "group": 300 },
+        { "name": "O", "group": 300 }
+      ]
+
+      // 設定顏色
+      const orceGroup_colorScale = d3.scaleOrdinal()
+	                        .domain([150, 250, 350])
+	                        .range(["red", "blue", "orange"])
+
+      
+      // 建立圓點，全都位於正中央
+      const node = d3.select('.forceGroup')
+               .append('g')
+               .selectAll("circle")
+               .data(forceGroup_data)
+               .enter()
+               .append('circle')
+               .attr('r', 20)
+               .attr('cx', 175)
+               .attr('cy', 100)
+               .style('fill', d=>colorScale(d.group))
+               .style('opacity', '0.6')
+
+      // 設定力模擬器
+      const forceGroup_simulation = d3.forceSimulation()
+          .force("x", d3.forceX().strength(0.5).x(d => d.group))
+          .force("y", d3.forceY().strength(0.1).y( 100 ))
+          .force("center", d3.forceCenter().x(175).y(100)) 
+          .force("charge", d3.forceManyBody().strength(1)) 
+          .force("collide", d3.forceCollide().strength(.1).radius(20).iterations(1))
+
+      // 將力模擬器的節點綁定資料
+      forceGroup_simulation.nodes(forceGroup_data)
+                .on("tick", function(d){
+                  node.attr("cx", d => d.x)
+                      .attr("cy", d => d.y)
+                  });
+
+      // js
+      const forceLink_data = {
+          "nodes": [
+              {"id": 1, "name": "A"},
+              {"id": 2, "name": "B"},
+              {"id": 3, "name": "C"},
+              {"id": 4, "name": "D"},
+              {"id": 5, "name": "E"},
+              {"id": 6, "name": "F"},
+              {"id": 7, "name": "G"},
+              {"id": 8, "name": "H"},
+              {"id": 9, "name": "I"},
+              {"id": 10, "name": "J"}
+                ],
+          "links": [
+              {"source": 1, "target": 2},
+              {"source": 1, "target": 3},
+              {"source": 1, "target": 6},
+              {"source": 2, "target": 3},
+              {"source": 2,"target": 7},
+              {"source": 3,"target": 4},
+              {"source": 8,"target": 3},
+              {"source": 4,"target": 5},
+              {"source": 4,"target": 9},
+              {"source": 5,"target": 10}
+            ]
+          }
+
+      const dots4 =  d3.select('.forceLink')
+                    .append('g')
+                    .selectAll('circle')
+                    .data(forceLink_data.nodes)
+                    .enter()
+                    .append('circle')
+                    .attr('r', 15)
+                    .style('fill', 'green')
+                    .style('opacity', 0.4)
+
+      const link = d3.select('.forceLink')
+                      .selectAll("line")
+                      .data(forceLink_data.links)
+                      .join("line")
+                      .style("stroke", "#aaa")
+
+      // 設定力模擬器
+      const forceLink_simulation = d3.forceSimulation(forceLink_data.nodes)
+              .force("link",  d3.forceLink().id(d=> d.id).links(forceLink_data.links))
+              .force("charge", d3.forceManyBody().strength(-300))
+              .force("center", d3.forceCenter(175, 100))
+              .on('tick', ticked)
+                          
+
+      // 設定 ticked 方法
+      function ticked(d){
+          link
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+
+          dots4.attr("cx", d=> d.x)
+              .attr("cy", d => d.y);
+      }
+
+      const forceHover_data = [{'r': 3}, {'r':34}, {'r': 23}, {'r': 33},
+                    {'r': 13},{'r': 22},{'r': 43},{'r': 17},{'r': 38}]
+
+      const dots5 = d3.select('.forceHover')
+                .selectAll('circle')
+                .data(forceHover_data)
+                .enter()
+                .append('circle')
+                .attr('r', d => d.r)
+                .attr('fill', 'blue')
+                .attr('opacity', 0.3)
+
+      // 設定力模擬器
+      const forceHover_simulation = d3.forceSimulation()
+              .force("center", d3.forceCenter().x(175).y(100)) 
+              .force("charge", d3.forceManyBody().strength(.3)) 
+                          .force("collide",d3.forceCollide().strength(.1).radius(30).iterations(1))
+      //綁定資料
+      forceHover_simulation.nodes(forceHover_data)
+                .on('tick', function(d){
+                  dots5.attr('cx', d=>d.x)
+                      .attr('cy', d=>d.y)
+                })
+
+      // 建立tooltips
+      const forceHover_tooltips = d3.select(".hoverWrap")
+                .append("div")
+                .style("opacity", 0)
+                .style('position', 'absolute')
+                .attr("class", "tooltip")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+
+      // hover
+      dots5.on('mouseover', forceHover_mouseover)
+          .on('mouseleave', forceHover_mouseleave)
+
+      function forceHover_mouseover(event, d){
+          console.log(d)
+          d3.select(this)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '3px')
+            .attr('opacity', 0.7)
+            .style('cursor', 'pointer')
+          
+          let pt = d3.pointer(event, this)
+          forceHover_tooltips.style('opacity', 1)
+                  .style('left', pt[0]+ 10 +'px')
+                  .style('top', pt[1]+'px')
+                  .html(`半徑：${d.r}`)
+      }
+
+      function forceHover_mouseleave(event, d){
+          d3.select(this)
+            .attr('stroke', 'none')
+            .attr('stroke-width', '0')
+            .attr('opacity', 0.3)
+          
+            forceHover_tooltips.style('opacity', 0)
+      }
+
+      const forceDrag_data = [{name:'A'},{name:'B'},{name:'C'},{name:'D'},{name:'E'},{name:'F'},{name:'G'}]
+
+      const dots6 = d3.select('.forceDrag')
+        .append('g')
+        .selectAll('circle')
+        .data(forceDrag_data)
+        .enter()
+        .append('circle')
+        .attr('r', 25)
+        .attr('cx', 50)
+        .attr('cy', 50)
+        .style("fill", "#19d3a2")
+        .style("fill-opacity", 0.3)
+        .attr("stroke", "#b3a2c8")
+        .style("stroke-width", 4)
+        .style('cursor', 'pointer')
+
+      const forceDrag_simulation = d3.forceSimulation()
+        .force("center", d3.forceCenter().x(175).y(100))
+        .force("charge", d3.forceManyBody().strength(1))
+        .force("collide", d3.forceCollide().strength(.1).radius(30).iterations(1));
+
+      forceDrag_simulation.nodes(forceDrag_data)
+                .on("tick", function(d){
+                    dots6.attr("cx", d => d.x)
+                        .attr("cy", d => d.y)
+                  });
+
+      // 拖曳開始
+      function dragstarted(event, d) {
+          // console.log(d)
+          d3.select(this)
+            .style('fill-opacity', 0.6)
+          d.fx = d.x;
+          d.fy = d.y;
+          forceDrag_simulation.alphaTarget(.03).restart();
+      }
+      // 拖曳期間
+      function dragged(event, d) {
+          d.fx = event.x;
+          d.fy = event.y;
+      }
+      // 拖曳結束
+      function dragended(event, d) {
+          forceDrag_simulation.alphaTarget(.03);
+          d3.select(this)
+            .style('fill-opacity', 0.3)
+          d.fx = null;
+          d.fy = null;
+      }
+
+      // 綁定拖曳事件
+      dots6.call(d3.drag() 
+                  .on("start", dragstarted)
+                  .on("drag", dragged)
+                  .on("end", dragended));
+
+      
+      const forceDragLink_data = {
+        "nodes": [
+            {"id": 1, "name": "A"},
+            {"id": 2, "name": "B"},
+            {"id": 3, "name": "C"},
+            {"id": 4, "name": "D"},
+            {"id": 5, "name": "E"},
+            {"id": 6, "name": "F"},
+            {"id": 7, "name": "G"},
+            {"id": 8, "name": "H"},
+            {"id": 9, "name": "I"},
+            {"id": 10, "name": "J"}
+              ],
+        "links": [
+            {"source": 1, "target": 2},
+            {"source": 1, "target": 3},
+            {"source": 1, "target": 6},
+            {"source": 2, "target": 3},
+            {"source": 2,"target": 7},
+            {"source": 3,"target": 4},
+            {"source": 8,"target": 3},
+            {"source": 4,"target": 5},
+            {"source": 4,"target": 9},
+            {"source": 5,"target": 10}
+          ]
+      }
+
+      const dots7 =  d3.select('.forceDragLink')
+                    .append('g')
+                    .selectAll('circle')
+                    .data(forceDragLink_data.nodes)
+                    .enter()
+                    .append('circle')
+                    .attr('r', 15)
+                    .style('fill', 'green')
+                    .style('opacity', 0.6)
+                    .style('cursor', 'pointer')
+
+      const forceDragLink_link = d3.select('.forceDragLink')
+                  .selectAll("line")
+                  .data(forceDragLink_data.links)
+                  .join("line")
+                  .style("stroke", "#aaa")
+
+                  
+      // 設定力模擬器
+      const forceDragLink_simulation = d3.forceSimulation(forceDragLink_data.nodes)
+          .force("forceDragLink_link",  d3.forceLink().id(d=> d.id).links(forceDragLink_data.links))
+          .force("charge", d3.forceManyBody().strength(-300))
+          .force("center", d3.forceCenter(175, 100))
+          .on('tick', forceDragLink_ticked)
+                          
+
+      // 綁定節點
+      function forceDragLink_ticked(d){
+        forceDragLink_link
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+
+          dots7.attr("cx", d=> d.x)
+              .attr("cy", d => d.y);
+      }
+
+      // 綁定拖曳事件
+      dots7.call(d3.drag() 
+                  .on("start", forceDragLink_dragstarted)
+                  .on("drag", forceDragLink_dragged)
+                  .on("end", forceDragLink_dragended));
+
+      function forceDragLink_dragstarted(event, d){
+          d3.select(this)
+            .style('fill', 'pink')
+          d.fx = d.x;
+          d.fy = d.y;
+          forceDragLink_simulation.alphaTarget(.03).restart(); // 停止後需要重新開始
+      }
+
+      function forceDragLink_dragged(event, d){
+          d.fx = event.x;
+          d.fy = event.y;
+      }
+
+      function forceDragLink_dragended(event, d){
+          d3.select(this)
+            .style('fill', 'green')
+            .style('opacity', 0.6)
+          d.fx = null
+          d.fy = null
+      }
+
+      const brush_data = [{r:20, x:100, y:60},{r:35, x:175, y:140}]
+
+      // svg
+      const brush_svg = d3.select('.brush')
+      const dots8 = brush_svg.selectAll('circle')
+                .data(brush_data)
+                .enter()
+                .append('circle')
+                .attr('r', d => d.r)
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .style("fill", "#19d3a2")
+
+      brush_svg.append("g")
+      .attr("class", "brush")
+      .call(d3.brush()
+              .extent( [ [0,0], [350,250] ]) // extent限制刷子的活動區塊，理想是比畫布稍大
+              .on("start brush", brushed) // brush 事件
+            )
+
+      // brush 的功能
+      // 加上event參數，就能用 event.selection
+      // selection會產出一個二維陣列，分別代表`x0`, `x1`, `y0`, `y1`，左上到右下的位置，讓你有辦法重新計算目前位置的extent，進而進行其他操作。
+      function brushed(event){
+          console.log(event)
+          const extent = event.selection
+          dots8.classed('selected', d => {return isBrushed(extent, d.x, d.y)})
+      }
+
+      // 設定圓點是否在brush選到的區塊內
+      function isBrushed(brush_coors, cx, cy){
+        let x0 = brush_coors[0][0],
+            x1 = brush_coors[1][0],
+            y0 = brush_coors[0][1],
+            y1 = brush_coors[1][1]
+
+          // 如果圓點在brush的範圍內，就會傳true；反之則回傳false
+          console.log(x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1)
+          return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1; 
+      }
+
+      const XY_Axis_svg = d3.select(".XY_Axis")
+      const XY_Axis_data = [{x:100, y:20}, {x:18, y:30}, {x:90, Y:250}]
+      // map 資料集
+      XY_Axis_xData = XY_Axis_data.map((i) => i.x); // 預期套資料後會得到 [100, 18, 90] 的陣列
+      XY_Axis_yData = XY_Axis_data.map((i) => i.y); // 預期套資料後會得到 [20, 30, 250] 的陣列
+      // 設定要給 X 軸用的scale 跟 axis
+      const XY_Axis_xScale = d3.scaleLinear()
+                    .domain([0, d3.max(XY_Axis_xData)])
+                    .range([20, 480]); // X 軸繪製的viewport起點終點(寬度)
+
+      const XY_Axis_xAxis = d3.axisBottom(XY_Axis_xScale)
+                    .tickFormat(function (d) {
+                      //調整標籤樣式
+                      return `${d} 元`;
+                    })
+
+      // 呼叫繪製x軸、調整x軸位置
+      const xAxisGroup = XY_Axis_svg.append("g")
+                          .call(XY_Axis_xAxis)
+                          .attr("transform", "translate(0,180)")
+
+      // 設定要給 Y 軸用的 scale 跟 axis
+      const XY_Axis_yScale = d3.scaleLinear()
+                      .domain([0, d3.max(XY_Axis_yData)])
+                      .range([180, 20]);  // Y 軸繪製的viewport 起點終點(高度)
+
+      const XY_Axis_yAxis = d3.axisLeft(XY_Axis_yScale)
+                      .ticks(5)
+
+      // 呼叫繪製y軸、調整y軸位置
+      const yAxisGroup = XY_Axis_svg.append("g")
+                            .call(XY_Axis_yAxis)
+                            .attr("transform", "translate(20,0)")
+
+
+      let pie_data = [{item:'交通', data:30},{item:'房租', data:45},
+            {item:'其他', data:9},{item:'吃飯', data:67},{item:'娛樂', data:22}]; 
+      
+
+      // 切換一二月資料
+      d3.select('.Feburary').on('click', function(){
+        pie_data = [{item:'交通', data:50},{item:'房租', data:65},
+                {item:'其他', data:39},{item:'吃飯', data:17},{item:'娛樂', data:72}];  
+        drawPie()
+      })
+
+      d3.select('.January').on('click', function(){
+        pie_data = [{item:'交通', data:30},{item:'房租', data:45},
+                {item:'其他', data:9},{item:'吃飯', data:67},{item:'娛樂', data:22}];   
+        drawPie()
+      })
+
+      const drawPie = () => {
+        // RWD 清除原本的圖型
+        var temp = d3.select('.pie')
+        temp_svg = temp.select("svg")
+        temp_svg.remove()
+
+        // svg圖形區大小、邊界
+        const pie_svgWidth = parseInt(d3.select(".pie").style("width")),
+              pie_svgHeight = pie_svgWidth*0.8,
+              pie_margin = 40;
+        
+
+
+        // 先設定 svg 大小
+        const pie_svg = d3.select(".pie")
+                        .append("svg")
+                        .attr("width", pie_svgWidth)
+                        .attr("height", pie_svgHeight)
+                        //.style('width', "100%")
+                        //.style('height', "200px")
+                        .style('border', "solid")
+                        .style('border-width', "1px")
+                        .style('border-color', "grey")
+
+        // 圖表與線條、標籤
+        pie_svg.append("g")
+          .attr("class", "slices")
+          .attr('transform', `translate(${pie_svgWidth / 2}, ${pie_svgHeight / 2})`);
+          
+        pie_svg.append("g")
+          .attr("class", "labels");
+          
+        pie_svg.append("g")
+          .attr("class", "lines");
+
+        // 設定顏色
+        const pie_color = d3.scaleOrdinal()
+                .range(["#4BEFCF","#0bbc17","#F96262", '#ffbe32', '#e271fc']);
+
+        // radius 用來設定半徑，圓餅圖的圓弧大小是區域的一半
+        const pie_radius = Math.min(pie_svgWidth, pie_svgHeight) / 2 - pie_margin;
+
+        // 設定每個資料在圓餅圖上:
+        const piechart = d3.pie()
+                   .value(d => d.data)
+                   .sort(function(a,b){
+                     console.log(a,b) // 固定圓餅圖的項目排序
+                     return d3.ascending(a.key, b.key)
+                   });
+
+        // innerRadius 跟 outerRadius 決定圓餅內圈外圈的大小 radius
+        const pie_arc = d3.arc()
+                      .innerRadius(0)
+                      .outerRadius(pie_radius)
+                      .padAngle(.02),
+              outerArc = d3.arc()
+                          .outerRadius(pie_radius * 0.9)
+                          .innerRadius(pie_radius * 0.9),
+              data_ready = piechart(pie_data)
+
+        // 計算每塊資料的占比%
+        // 先用 d3.sum 加總全部資料，再將資料一一除上總數
+        const total = d3.sum(pie_data, d => d.data)
+        pie_data.forEach(d => {
+          d.percentage = Math.round((d.data/total)*100)
+        })
+
+        // 建立pie
+        const cutePie = pie_svg.select('.slices')
+                .selectAll('g')
+                .data(data_ready)
+                .enter()
+                .append('g')
+                .attr('class', 'arc')
+
+        cutePie.append('path')
+                .attr('d', pie_arc)
+                .attr('fill', pie_color)
+                .attr("stroke", "#fff")
+                .style("stroke-width", "2px")
+                .style("opacity", 1);
+
+        // 加上每個區塊的標示
+        // 控制文字的位置
+        const arcText = d3.arc()
+                          .innerRadius(pie_radius)
+                          .outerRadius(pie_radius - 10)
+
+        const itemText = cutePie.append('text')
+                                .attr('transform', d => `translate(${arcText.centroid(d)})`)
+                                .text(d => d.data.item + d.data.percentage + '%')
+                                .style('text-anchor', 'middle')
+                                .style('font-size', 16)
+                                .style('fill', 'black')
+
+        // 滑鼠互動 mouseover、mouseleave
+        d3.selectAll('.arc path')
+          .style('cursor', 'pointer')
+          .on('mouseover', function(){
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .style("filter", "drop-shadow(2px 4px 6px black)")
+              .style('transform', 'scale(1.1)')
+          })
+          .on('mouseleave', function(){
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .style("filter", "drop-shadow(0 0 0 black)")
+              .style('transform', 'scale(1)')
+          })
+      }
+      d3.select(window).on("resize", drawPie);
+      drawPie()
+
+      async function readCSVFile(url) {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const fileReader = new FileReader();
+          fileReader.readAsText(blob, 'Big5'); // 這裡使用 Big5 編碼，請根據你的 CSV 檔案的實際編碼格式進行修改
+          return new Promise((resolve, reject) => {
+              fileReader.onload = (event) => {
+                  const csvString = event.target.result;
+                  const data = d3.csvParse(csvString);
+                  resolve(data);
+              };
+              fileReader.onerror = (event) => {
+                  reject(event.target.error);
+              };
+          });
+      }
+
+
+      async function getData() {
+        // 取資料
+        //dataGet = await d3.csv("202402.csv")
+        const dataGet = await readCSVFile("202402.csv");
+        //console.log(dataGet)
+        chart_data = dataGet
+        drawBarChart()
+      };
+      getData()
+
+      // RWD
+      function drawBarChart(){
+        // 刪除原本的svg.charts，重新渲染改變寬度的svg
+        d3.select('.chart svg').remove();
+
+        // RWD 的svg 寬高
+        const chart_rwdSvgWidth = parseInt(d3.select('.chart').style('width')),
+              chart_rwdSvgHeight = chart_rwdSvgWidth*0.8,
+              chart_margin = 40;
+
+        const chart_svg = d3.select('.chart')
+                      .append('svg')
+                      .attr('width', chart_rwdSvgWidth)
+                      .attr('height', chart_rwdSvgHeight)
+                      .style('border', "solid")
+                      .style('border-width', "1px")
+                      .style('border-color', "grey")
+        
+        // map 資料集
+        const  chart_xData = chart_data.map((i) => i['縣市']);
+        //由於台電提供的A售電數度是帶有千分號的字串，我們要先把它處理成數字
+        const  chart_yData = chart_data.map((i) => parseInt(i['A.售電量(度)'].split(',').join('')));
+
+        // 設定要給 X 軸用的 scale 跟 axis
+        const chart_xScale = d3.scaleBand()
+                        .domain(chart_xData)
+                        .range([chart_margin*2, chart_rwdSvgWidth - chart_margin/2]) // 寬度
+                        .padding(0.2)
+        
+        const chart_xAxis = d3.axisBottom(chart_xScale)
+
+        // 呼叫繪製x軸、調整x軸位置
+        const chart_xAxisGroup = chart_svg.append("g")
+                              .call(chart_xAxis)
+                              .attr("transform", `translate(0,${chart_rwdSvgHeight - chart_margin})`)
+                              .selectAll("text") // 調整刻度文字標籤傾斜
+                              .attr("transform", "translate(-10,0)rotate(-45)")
+                              .style("text-anchor", "end");
+
+        // 設定要給 Y 軸用的 scale 跟 axis
+        const chart_yScale = d3.scaleLinear()
+                        .domain([0, d3.max(chart_yData)])
+                        .range([chart_rwdSvgHeight - chart_margin, chart_margin]) // 數值要顛倒，才會從低往高排
+                        .nice() // 補上終點值
+
+        const chart_yAxis = d3.axisLeft(chart_yScale)
+                        .ticks(5)
+                        .tickSize(3)
+
+        // 呼叫繪製y軸、調整y軸位置
+        const chart_yAxisGroup = chart_svg.append("g")
+                              .call(chart_yAxis)
+                              .attr("transform", `translate(${chart_margin*2},0)`)
+
+        // 開始建立長條圖
+        const bar = chart_svg.selectAll("rect")
+              .data(chart_data)
+              .join("rect")
+              .attr("x", d => chart_xScale(d['縣市'])) // 讓長條圖在刻度線中間
+              .attr("y", d => chart_yScale(parseInt(d['A.售電量(度)'].split(',').join(''))))
+              .attr("width", chart_xScale.bandwidth())
+              .attr("height", d => {
+                  return (chart_rwdSvgHeight - chart_margin) - chart_yScale(parseInt(d['A.售電量(度)'].split(',').join('')))
+                })
+              .attr("fill", "#69b3a2")
+              .attr('cursor', 'pointer')
+      }
+
+        
     </script>
 </body>
 </html>

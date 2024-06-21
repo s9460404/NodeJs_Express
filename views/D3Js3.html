@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: 960px;
+  height: 500px;
+  position: relative;
+}
+
+svg {
+	width: 100%;
+	height: 100%;
+}
+
+path.slice{
+	stroke-width:2px;
+}
+
+polyline{
+	opacity: .3;
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
+}
+
+</style>
+<body>
+<button class="randomize">randomize</button>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+function generateRandomColorArray(length) {
+    const colorArray = [];
+    const hexChars = '0123456789ABCDEF';
+
+    // 生成隨機色碼的函式
+    /*function getRandomColor() {
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += hexChars[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }*/
+	function getRandomHslColor() {
+
+		function getRandomHue() {
+			const hues = [
+				// 紅色 (0° 到 60° 和 300° 到 360°)
+				Math.floor(Math.random() * 31), // 0 to 60
+				Math.floor(Math.random() * 31) + 330, // 300 to 360
+
+				// 黃色 (60° 到 120°)
+				Math.floor(Math.random() * 31) + 75, // 60 to 120
+
+				// 橘色 (30° 到 45°)
+				Math.floor(Math.random() * 16) + 30, // 30 to 45
+
+				// 藍色 (180° 到 270°)
+				Math.floor(Math.random() * 31) + 210 // 180 to 270
+			];
+
+			// 從 hues 陣列中隨機選擇一個色相值
+			const randomIndex = Math.floor(Math.random() * hues.length);
+			console.log(hues[randomIndex]);
+			return hues[randomIndex];
+		}
+
+        //const h = Math.floor(Math.random() * 360); // 隨機色相 (0-360)
+		const h = Math.floor(getRandomHue());
+        //const s = Math.floor(Math.random() * 100); // 隨機飽和度 (0-100%)
+		const s = Math.floor(80);
+        //const l = Math.floor(Math.random() * 100); // 隨機亮度 (0-100%)
+		const l = Math.floor(70);
+
+
+
+        return `hsl(${h}, ${s}%, ${l}%)`;
+    }
+
+    // 根據指定長度生成色碼陣列
+    for (let i = 0; i < length; i++) {
+        colorArray.push(getRandomHslColor());
+    }
+
+    return colorArray;
+}
+
+var svg = d3.select("body")
+	.append("svg")
+	.append("g")
+
+svg.append("g")
+	.attr("class", "slices");
+svg.append("g")
+	.attr("class", "labels");
+svg.append("g")
+	.attr("class", "lines");
+
+var width = 960,
+    height = 450,
+	radius = Math.min(width, height) / 2;
+
+var pie = d3.layout.pie()
+	.sort(null)
+	.value(function(d) {
+		return d.value;
+	});
+
+var arc = d3.svg.arc()
+	.outerRadius(radius * 0.8)
+	.innerRadius(radius * 0.4);
+
+var outerArc = d3.svg.arc()
+	.innerRadius(radius * 0.9)
+	.outerRadius(radius * 0.9);
+
+svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var key = function(d){ return d.data.label; };
+
+range = generateRandomColorArray(11);
+
+var color = d3.scale.ordinal()
+	.domain(["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"])
+	.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	//.range(range);
+	//.range(["#050C9C", "#3572EF", "#3ABEF9", "#A7E6FF","#EF9C66","#FCDC94","#FFFF6F","#4A4AFF","#D3A4FF","#02F78E"]);
+	//.range(["#60acfc", "#32d3eb", "#5bc49f", "#feb64d","#ff7c7c","#9287e7"]);
+	//.range(["#050C9C", "#3572EF", "#3ABEF9", "#A7E6FF","#EF9C66","#FCDC94"]);
+
+function randomData (){
+	var labels = color.domain();
+	return labels.map(function(label){
+		return { label: label, value: Math.random() }
+	});
+}
+
+change(randomData());
+
+d3.select(".randomize")
+	.on("click", function(){
+		change(randomData());
+	});
+
+
+function change(data) {
+
+	/* ------- PIE SLICES -------*/
+	var slice = svg.select(".slices").selectAll("path.slice")
+		.data(pie(data), key);
+
+	slice.enter()
+		.insert("path")
+		.style("fill", function(d) { return color(d.data.label); })
+		.attr("class", "slice");
+
+	slice		
+		.transition().duration(1000)
+		.attrTween("d", function(d) {
+			this._current = this._current || d;
+			var interpolate = d3.interpolate(this._current, d);
+			this._current = interpolate(0);
+			return function(t) {
+				return arc(interpolate(t));
+			};
+		})
+
+	slice.exit()
+		.remove();
+
+	/* ------- TEXT LABELS -------*/
+
+	var text = svg.select(".labels").selectAll("text")
+		.data(pie(data), key);
+
+	text.enter()
+		.append("text")
+		.attr("dy", ".35em")
+		.text(function(d) {
+			return d.data.label;
+		});
+	
+	function midAngle(d){
+		return d.startAngle + (d.endAngle - d.startAngle)/2;
+	}
+
+	text.transition().duration(1000)
+		.attrTween("transform", function(d) {
+			this._current = this._current || d;
+			var interpolate = d3.interpolate(this._current, d);
+			this._current = interpolate(0);
+			return function(t) {
+				var d2 = interpolate(t);
+				var pos = outerArc.centroid(d2);
+				pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+				return "translate("+ pos +")";
+			};
+		})
+		.styleTween("text-anchor", function(d){
+			this._current = this._current || d;
+			var interpolate = d3.interpolate(this._current, d);
+			this._current = interpolate(0);
+			return function(t) {
+				var d2 = interpolate(t);
+				return midAngle(d2) < Math.PI ? "start":"end";
+			};
+		});
+
+	text.exit()
+		.remove();
+
+	/* ------- SLICE TO TEXT POLYLINES -------*/
+
+	var polyline = svg.select(".lines").selectAll("polyline")
+		.data(pie(data), key);
+	
+	polyline.enter()
+		.append("polyline");
+
+	/*polyline.transition().duration(1000)
+		.attrTween("points", function(d){
+			this._current = this._current || d;
+			var interpolate = d3.interpolate(this._current, d);
+			this._current = interpolate(0);
+			return function(t) {
+				var d2 = interpolate(t);
+				var pos = outerArc.centroid(d2);
+				pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+				return [arc.centroid(d2), outerArc.centroid(d2), pos];
+			};			
+		});*/
+	polyline
+		.attr('points', function(d) {
+                            const pos = outerArc.centroid(d);
+                            pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                            return [arc.centroid(d), outerArc.centroid(d), pos]
+                        });
+	
+	polyline.exit()
+		.remove();
+};
+
+</script>
+</body>

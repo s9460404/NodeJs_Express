@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatroom</title>
+    <link type="text/css" rel="stylesheet" href="/chat.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap" rel="stylesheet">        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/zh-tw.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #6a11cb;
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            /*background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));*/
+            background: -webkit-linear-gradient(to right, rgba(220, 181, 255, 0.9), rgba(132, 193, 255, 0.9));
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            /*background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));*/
+            background: linear-gradient(to right, rgba(220, 181, 255, 0.9), rgba(132, 193, 255, 0.9));
+        }
+
+        .selected{
+          fill: blue !important
+        }
+
+        /*.pie {
+            margin: auto;
+            width: 80%;
+            min-width: 200px;
+            margin: auto;
+        }*/
+        .basicDonut {
+        margin: auto;
+        width: 80%;
+        min-width: 200px;
+        margin: auto;
+        text-align:center
+    }
+
+    /*加陰影 */
+    .top10_money2 svg {
+        filter: drop-shadow( 0px 6px 6px rgba(0,0,0,.25) );
+        }
+
+    /*資料軸線*/
+    .top10_money2 polyline {
+        opacity: .3;
+        stroke: black;
+        stroke-width: 2px;
+        fill: none;
+    }
+
+    /* 字體加粗*/
+    .labelName tspan {
+        font-style: normal;
+        font-weight: 700;
+    }
+
+    /* 字形 */
+    .labelName {
+        font-size: 0.9em;
+        font-style: italic;
+    }
+
+    #app {
+      font-family: sans-serif;
+      border: 1px solid #eee;
+      border-radius: 2px;
+      padding: 20px 30px;
+      margin-top: 1em;
+      margin-bottom: 40px;
+      user-select: none;
+      overflow-x: auto;
+    }
+
+    .tab-button {
+      padding: 6px 10px;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      background: #f0f0f0;
+      margin-bottom: -1px;
+      margin-right: -1px;
+    }
+    .tab-button:hover {
+      background: #e0e0e0;
+    }
+    .tab-button.active {
+      background: #e0e0e0;
+    }
+    .demo-tab {
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    .dynamic-component-demo-posts-tab {
+      li {
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    </style>
+</head>
+<body>
+
+    <!--navbar-->
+    <nav class="navbar navbar-expand-lg navbar-light gradient-custom">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Project</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Mongodb
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/Chatroom">ChatRoom</a></li>
+                  <li><a class="dropdown-item" href="/Travel">Travel Accommodation Website</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Vue.js
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/Test">Test</a></li>
+                  <li><a class="dropdown-item" href="/ChartJs">ChartJs</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+    </nav>
+    <!--navbar-->
+    <!--<nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
+        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
+        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">a</div>
+      <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">b</div>
+      <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">c</div>
+    </div>-->
+    <div id="app">
+      <button
+         v-for="tab in tabs"
+         :key="tab"
+         :class="['tab-button', { active: currentTab === tab }]"
+         @click="currentTab = tab">
+        {{ tab }}
+      </button>
+    
+      <component :is="currentTabComponent"></component>
+    </div>
+    <!--<div class="container">
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col-10">
+            <div class="top10_money2"></div>
+          </div>
+        </div>
+    </div>-->
+    
+    
+    
+    <script>
+        const app = Vue.createApp({
+          data() {
+            return {
+              currentTab: 'Home',
+              tabs: ['Home', 'Posts', 'Archive']
+            }
+          },
+          computed: {
+            currentTabComponent() {
+              return `tab-${ this.currentTab.toLowerCase() }`;
+            }
+          }
+        });
+
+        app.component('tab-home', {
+          template: `<div class="demo-tab"><div class="container">
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col-10">
+            <div class="top10_money2"></div>
+          </div>
+        </div>
+    </div></div>`
+        });
+
+        app.component('tab-posts', {
+          template: `<div class="demo-tab">Post component</div>`
+        });
+
+        app.component('tab-archive', {
+          template: `<div class="demo-tab">Archive component</div>`
+        });
+
+        app.mount('#app');
+
+        async function readCSVFile(url) {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const fileReader = new FileReader();
+            fileReader.readAsText(blob, 'Big5'); // 這裡使用 Big5 編碼，請根據你的 CSV 檔案的實際編碼格式進行修改
+            return new Promise((resolve, reject) => {
+                fileReader.onload = (event) => {
+                    const csvString = event.target.result;
+                    const data = d3.csvParse(csvString);
+                    resolve(data);
+                };
+                fileReader.onerror = (event) => {
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        function shuffleArray(array) {
+            // 遍歷每個元素
+            for (let i = array.length - 1; i > 0; i--) {
+                // 隨機選擇索引位置 j，其中 0 <= j <= i
+                const j = Math.floor(Math.random() * (i + 1));
+                // 交換 array[i] 和 array[j]
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        async function getData() {
+            // 取資料
+            //dataGet = await d3.csv("202402.csv")
+            const dataGet = await readCSVFile("20231005.csv");
+            console.log(dataGet);
+            
+            //chart_data = dataGet
+
+            var result = [];
+            dataGet.reduce(function(res, value) {
+                //console.log(value);
+                if (!res[value["顧客名稱"]]) {
+                    if(!isNaN(parseInt(value["交易金額"]))){
+                        //res[value["顧客名稱"]] = { "name": value["顧客名稱"], "trade_money": parseInt(value["交易金額"]), "trade_num": 1 };
+                        res[value["顧客名稱"]] = { "顧客名稱": value["顧客名稱"], "交易金額": parseInt(value["交易金額"]), "交易次數": 1 };
+                        result.push(res[value["顧客名稱"]])
+                    }
+                }
+                else{
+                    if(!isNaN(parseInt(value["交易金額"]))){
+                        //res[value["顧客名稱"]]["trade_money"] += parseInt(value["交易金額"]);
+                        //res[value["顧客名稱"]]["trade_num"] += 1;
+                        res[value["顧客名稱"]]["交易金額"] += parseInt(value["交易金額"]);
+                        res[value["顧客名稱"]]["交易次數"] += 1;
+                    }
+                }
+                return res;
+            }, {});
+            //console.log(result)
+
+            var top10_money = new Array;
+            var top10_number = new Array;
+            for(var i = 0; i < 10; i++){
+                top10_money.push(result[i]);
+                top10_number.push(result[i]);
+            }
+            for(var j = 10; j < result.length; j++){
+                for(i = 0; i < 10; i++){
+                    //if( parseInt(result[j]["trade_money"]) > parseInt(top10_money[i]["trade_money"])){
+                    if( parseInt(result[j]["交易金額"]) > parseInt(top10_money[i]["交易金額"])){
+                        top10_money[i] = result[j];
+                        break;
+                    }
+                }
+                for(k = 0; k < 10; k++){
+                    //if( parseInt(result[j]["trade_num"]) > parseInt(top10_number[k]["trade_num"])){
+                    if( parseInt(result[j]["交易次數"]) > parseInt(top10_number[k]["交易次數"])){
+                        top10_number[k] = result[j];
+                        break;
+                    }
+                }
+            }
+            console.log(top10_money)
+            //console.log(top10_number)
+
+            /*let data = [{item:'交通', data:30},{item:'房租', data:45},
+            {item:'其他', data:9},{item:'吃飯', data:67},{item:'娛樂', data:22}]; */
+            /*let data = [{"顧客名稱":'交通', "交易金額":30},{"顧客名稱":'房租', "交易金額":45},
+            {"顧客名稱":'其他', "交易金額":9},{"顧客名稱":'吃飯', "交易金額":67},{"顧客名稱":'娛樂', "交易金額":22}]; */
+            //shuffleArray(top10_money);
+            //console.log(top10_money);
+            
+            let data = top10_money
+            
+            
+            // RWD 清除原本的圖型
+            d3.select('svg').remove()              
+
+            // svg圖形區大小、邊界
+            const svgWidth2 = parseInt(d3.select(".top10_money2").style("width")),
+                  svgHeight2 = svgWidth2*0.8,
+                  margin2 = 40;
+
+            // 先設定 svg 大小
+            d3.select('.top10_money2').style('position', 'relative')
+            const svg2 = d3.select(".top10_money2")
+                            .append("svg")
+                            .attr("width", svgWidth2)
+                            .attr("height", svgHeight2)
+                            .append("g");
+
+            // 設定圖表寬高與圓弧半徑
+            const width2 = svgWidth2-margin2*2;
+            const height2 = svgHeight2-margin2*2;
+            // radius設定圓餅圖的圓弧大小，是區域的一半
+            const radius2 = Math.min(width2, height2)/2;
+
+            // 設定顏色
+            const color2 = d3.scaleOrdinal()
+                //.range(["#4BEFCF","#2c9af7","#F96262", '#910842', '#b054e5']);
+                //.range(["#050C9C", "#3572EF", "#3ABEF9", "#A7E6FF","#EF9C66","#FCDC94","#FFFF6F","#4A4AFF","#D3A4FF","#02F78E"]);
+                //.range(["#02F78E","#D3A4FF","#4A4AFF","#FFFF6F","#FCDC94","#EF9C66","#050C9C", "#3572EF", "#3ABEF9", "#A7E6FF",]);
+                .range(["#4288b5","#4da3b1","#65baaa", '#a2d9a3', '#d8ef9f', '#f7faaf', '#fee89a', '#fdbf70', '#ef6d4a', '#d13c4b']);
+            // 圓餅、線段、標籤
+            svg2.append("g")
+                .attr("class", "slices");
+
+            svg2.append("g")
+              .attr("class", "labels");
+
+            svg2.append("g")
+              .attr("class", "lines");
+
+            // 建立圓餅圖
+            const pie2 = d3.pie()
+              .sort(null)
+              .value(d => d["交易金額"]);
+              
+            const arc2 = d3.arc().innerRadius(radius2*0.3).outerRadius(radius2*0.6).padAngle(.02);
+
+            // 設定弧度
+            const outerArc2 = d3.arc()
+                        .outerRadius(radius2 * 0.9)
+                        .innerRadius(radius2 * 0.9);
+
+            // 建立甜甜圈圖 
+            svg2.attr("transform", "translate(" + svgWidth2 / 2 + "," + svgHeight2 / 2 + ")");
+
+            svg2.selectAll('path')
+                .data(pie2(data))
+                .enter()
+                .append('path')
+                .attr('d', arc2)
+                .attr('fill', (d,i)=> color2(i))
+                //.attr("stroke", "#fff")
+                //.style("stroke-width", "1px")
+                //.style("opacity", 1);
+
+            // 建立線段跟標示
+            svg2.append('g').classed('labels',true);
+            svg2.append('g').classed('lines',true);
+            
+            // 綁定文字標籤要顯示的內容
+            svg2.append('text')
+                .attr('class', 'toolCircle')
+                .attr('dy', 0) 
+                .html('交易金額Top10')
+                .style('font-size', '.9em')
+                .style('text-anchor', 'middle');
+
+            // 創建tooltip
+            const tooltips = d3.select(".top10_money2")
+                    .append("div")
+                    .style("opacity", 0)
+                    .style('position', 'absolute')
+                    .attr("class", "tooltip")
+                    .style("background-color", "white")
+                    .style("border", "solid")
+                    .style("border-width", "2px")
+                    .style("border-radius", "5px")
+                    .style("padding", "5px")
+
+            // 滑鼠互動 mouseover、mouseleave
+            d3.selectAll('path')
+              .style('cursor', 'pointer')
+              .on('mouseover', function(){
+                tooltips.style("opacity", 1)
+                d3.select(this)
+                  .transition()
+                  .duration(500)
+                  .style("filter", "drop-shadow(2px 4px 6px black)")
+                  .style('transform', 'scale(1.1)')
+              })
+              .on('mousemove', function(d){
+                let pt = d3.pointer(event, this)
+                tooltips.style("opacity", 1)
+                        .html(d.target.__data__.data["顧客名稱"]+"<br>"+d.target.__data__.data["交易金額"])
+                        .style('left', pt[0]+(svgWidth2 / 2)+30+'px')
+                        .style('top', pt[1]+(svgHeight2 / 2)+'px')
+              })
+              .on('mouseleave', function(){
+                tooltips.style("opacity", 0)
+                d3.select(this)
+                  .transition()
+                  .duration(500)
+                  .style("filter", "drop-shadow(0 0 0 black)")
+                  .style('transform', 'scale(1)')
+              })
+          
+          //////////////////////////////////////////////////////////
+          
+          
+        };
+        getData();
+        function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; }
+    </script>
+</body>
+</html>
