@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Navigation Example</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.3/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* 禁用橫向滾動條 */
+        }
+        .navbar {
+            background-color: #6d73c0;
+            z-index: 1000; /* 確保 navbar 在最上層（在手機解析度下） */
+        }
+
+        /* 手機解析度下的 navbar 設置 */
+        @media (max-width: 767px) {
+            .navbar {
+                position: fixed; /* 固定在頁面上方 */
+                width: 100%; /* 寬度 100% */
+                top: 0; /* 垂直位置為 0 */
+                left: 0; /* 水平位置為 0 */
+            }
+
+            .container {
+                margin-top: 56px; /* 確保內容不被 navbar 遮擋，根據 navbar 的高度進行調整 */
+            }
+        }
+
+        /* 桌面解析度下的 navbar 設置 */
+        @media (min-width: 768px) {
+            .navbar {
+                position: static; /* 在桌面解析度下使用正常流動排版 */
+                height: 8%;
+            }
+
+            .container {
+                margin-top: 0; /* 在桌面解析度下不需要額外的上邊距 */
+            }
+        }
+
+        /* 設定選中的 nav-link 背景顏色、文字顏色及邊框顏色 */
+        .nav-link.active {
+            background-color: #331cb4 !important; /* 設置選中的背景顏色 */
+            color: #ffffff !important; /* 設置選中的文字顏色 */
+            border: 1px solid #d25118 !important; /* 設置選中的邊框顏色（如果需要） */
+        }
+
+        /* 設定未選中的 nav-link 文字顏色 */
+        .nav-link {
+            color: #ffffff !important; /* 設置未選中的文字顏色 */
+        }
+
+        /* 設定 nav-link 的懸停狀態 */
+        .nav-link:hover {
+            background-color: #c05b20; /* 設置懸停時的背景顏色 */
+            color: #ffffff; /* 設置懸停時的文字顏色 */
+            border: 1px solid #ffffff !important;
+        }
+
+        /* 設定 dropdown 菜單項目的顏色 */
+        .dropdown-menu .dropdown-item {
+            color: #6d73c0; /* 預設顏色 */
+        }
+
+        /* 設定 dropdown 菜單項目的懸停顏色 */
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #c05b20; /* 懸停時的背景顏色 */
+            color: #ffffff; /* 懸停時的文字顏色 */
+        }
+        
+        .container {
+            height: 90%;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        .map-wrapper {
+            height: calc(100vh - 56px); /* Adjust according to the height of the navigation tabs */
+        }
+        .map-panel {
+            height: 100%;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Adjust the space between rows */
+        }
+        .form-group label {
+            margin-right: 10px; /* Adjust space between label and input */
+            width: 100px; /* Adjust label width as needed */
+        }
+        .form-group input {
+            flex: 1; /* Make input take up remaining space */
+            min-width: 180px; /* Adjust minimum width of input */
+        }
+        .bordered {
+            border: 2px solid #d25118; /* Bootstrap primary color */
+            border-radius: 5px;
+            padding: 10px; /* Add some padding inside the border */
+        }
+        @media (max-width: 767px) {
+            .map-wrapper {
+                height: calc(100vh - 56px); /* Increase the height for smaller screens */
+                flex-direction: column;
+            }
+            .map-wrapper .col-md-5 {
+                height: 50%; /* Adjust height for the sidebar on small screens */
+                overflow: auto;
+            }
+            .map-wrapper .col-md-7 {
+                height: 50%; /* Adjust height for the map on small screens */
+            }
+        }
+        body {background-color: #f2f2f2;}
+        .map-container {
+            height: 100%; /* 或設置為其他固定值，比如 400px 或 500px */
+            width: 100%;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: 40px auto;
+            /* Adjust the height and overflow settings if needed */
+            height: 100vh; /* or use a specific height like 600px */
+            overflow: hidden; /* Ensure the calendar doesn't overflow its container */
+        }
+        .holidayEvent {
+            background-color: #e5be20;
+            border-color: #e5be20;
+        }
+        #calendar-container {
+            width: 100%; /* Ensure container takes full width */
+            height: 80vh; /* Adjust the height to fit within viewport height */
+            overflow: hidden; /* Hide overflow to prevent scrollbars */
+            display: flex;
+            align-items: center; /* Center the calendar vertically */
+            justify-content: center; /* Center the calendar horizontally */
+        }
+        #calendar {
+            width: 100%;
+            height: 100%;
+        }
+        /* 更改日期网格线的颜色 */
+        .fc {
+            border: 1px solid #000000 !important; /* 设置外层边框颜色 */  
+        }
+        .fc-col-header-cell {
+            border-color: #000000 !important; /* 设置列标题的边框颜色 */
+        }
+        .fc-daygrid-day {
+            border-color: #000000 !important; /* 设置每一天的边框颜色 */
+        }
+        .fc-daygrid-day-frame {
+            border-color: #000000 !important; /* 设置每一天的边框颜色 */
+        }
+        .fc-daygrid-day-number {
+            color: #ff0000; /* 更改日期文字颜色 */
+        }
+        .fc-daygrid-day-bg {
+            background-color: #f0f0f0; /* 更改背景颜色 */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light gradient-custom">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#" id="set_data" onclick="change_tab(this)">登記資料</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="set_route" onclick="change_tab(this)">設定路線</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="set_date" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    排班日曆
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#" onclick="change_tab(this)">月</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="change_tab(this)">週</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="change_tab(this)">日</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div id="tab1">
+            <div class="row map-wrapper">
+                <div class="col-lg-4 col-md-5 col-sm-12 bordered map-panel">
+                    <div class="text-center">
+                        <h2>登記資料</h2>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label class="form-label ">姓名 : </label>
+                        <input id="name" type="text" placeholder="姓名" class="form-control mb-2 form-input" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">地址 : </label>
+                        <input id="address" type="text" placeholder="地址" class="form-control mb-2" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">聯絡電話 : </label>
+                        <input id="phone" type="text" placeholder="聯絡電話" class="form-control mb-2" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">課程日期 : </label>
+                        <input id="date" type="date" placeholder="課程日期" class="form-control mb-2" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">去程時間 : </label>
+                        <input id="departure_time" type="time" placeholder="去程時間" class="form-control mb-2" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">回程日期 : </label>
+                        <input id="return_time" type="time" placeholder="回程時間" class="form-control mb-2" />
+                    </div>
+                    <div class="text-center">
+                        <button onclick="submit()" class="btn btn-primary">送出</button>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-7 col-sm-12 bordered">
+                    <div id="map1" class="map-container"></div>
+                </div>
+            </div>
+        </div>
+        <div id="tab2" style="display: none;">
+            <div class="row map-wrapper">
+                <div class="col-lg-4 col-md-5 col-sm-12 bordered map-panel">
+                    <div class="text-center">
+                        <h2>設定路線</h2>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label class="form-label ">起點地址 : </label>
+                        <input id="start" type="text" placeholder="起點地址" class="form-control mb-2" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">途經點1 : </label>
+                        <input id="waypoint1" type="text" placeholder="途經點1" class="form-control mb-2" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">途經點2 : </label>
+                        <input id="waypoint2" type="text" placeholder="途經點2" class="form-control mb-2" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label ">終點地址 : </label>
+                        <input id="end" type="text" placeholder="終點地址" class="form-control mb-2" />
+                    </div>
+                    <div class="text-center">
+                        <button onclick="calculateRoute()" class="btn btn-primary">計算路線</button>
+                    </div>
+                    <div id="directions-panel"></div>
+                </div>
+                <div class="col-lg-8 col-md-7 col-sm-12 bordered">
+                    <div id="map2" class="map-container"></div>
+                </div>
+            </div>
+        </div>
+        <div id="tab3">
+            <br>
+            <div id="calendar-container">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Google Maps JavaScript API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATeSFNz8AR4QJGQW5q8CqGZBVkiXEZ7vs&callback=initMap" async defer></script>
+    <script>
+        let map, directionsService, directionsRenderer;
+
+        function initMap() {
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+
+            /*map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 25.0478, lng: 121.5319 }, // Default to Taipei
+                zoom: 13
+            });*/
+            map1 = new google.maps.Map(document.getElementById('map1'), {
+                center: { lat: 25.0478, lng: 121.5319 }, // Default to Taipei
+                zoom: 13
+            });
+
+            map2 = new google.maps.Map(document.getElementById('map2'), {
+                center: { lat: 25.0478, lng: 121.5319 }, // Default to Taipei
+                zoom: 13
+            });
+
+            directionsRenderer.setMap(map2);
+            directionsRenderer.setPanel(document.getElementById('directions-panel'));
+
+            // Adding click event listener
+            map1.addListener('click', (event) => {
+                const latLng = event.latLng;
+                document.getElementById('address').value = `${latLng.lat().toFixed(6)},${latLng.lng().toFixed(6)}`;
+            });
+        }
+        
+        function calculateRoute() {
+            const startAddress = document.getElementById('start').value;
+            const waypoint1 = document.getElementById('waypoint1').value;
+            const waypoint2 = document.getElementById('waypoint2').value;
+            const endAddress = document.getElementById('end').value;
+
+            if (startAddress && endAddress) {
+                document.getElementById('directions-panel').style.display = 'block'; // Show directions panel
+
+                directionsService.route({
+                    origin: startAddress,
+                    destination: endAddress,
+                    optimizeWaypoints: false,
+                    waypoints: [
+                        { location: waypoint1, stopover: true },
+                        { location: waypoint2, stopover: true }
+                    ],
+                    travelMode: google.maps.TravelMode.DRIVING // Set travel mode to driving
+                }, (response, status) => {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        directionsRenderer.setDirections(response);
+
+                        const route = response.routes[0];
+                        const legs = route.legs;
+                        let totalDistance = 0;
+                        let totalDuration = 0;
+
+                        for (let i = 0; i < legs.length; i++) {
+                            totalDistance += legs[i].distance.value; // Distance in meters
+                            totalDuration += legs[i].duration.value; // Duration in seconds
+                        }
+
+                        const distanceInKm = (totalDistance / 1000).toFixed(2);
+                        const durationInMin = (totalDuration / 60).toFixed(2);
+
+                        alert(`Total distance: ${distanceInKm} km\nEstimated time: ${durationInMin} minutes`);
+                    } else {
+                        alert('Unable to calculate route: ' + status);
+                    }
+                });
+            } else {
+                alert('Please fill out all addresses');
+            }
+        }
+
+        async function submit(){
+            //var name = document.getElementById('name');
+            //var address = document.getElementById('address');
+
+            var data = {
+                "name" : document.getElementById('name').value,
+                "address" : document.getElementById('address').value,
+                "phone" : document.getElementById('phone').value,
+                "RequestDate" : document.getElementById('date').value,
+                "DepartureTime" : document.getElementById('departure_time').value,
+                "ReturnTime" : document.getElementById('return_time').value
+            };
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            };
+
+            const response = await fetch("/googlemap/data", options);
+            const json = await response.json();
+            console.log(json);
+        }
+
+        function getParentDropdownToggle(dropdownItem) {
+            // 找到下拉選單的父元素（即 dropdown-toggle）
+            var dropdownMenu = dropdownItem.closest('.dropdown-menu');
+            var dropdownToggle = dropdownMenu.previousElementSibling;
+    
+            // 確保找到的元素是 .dropdown-toggle
+            if (dropdownToggle && dropdownToggle.classList.contains('dropdown-toggle')) {
+                return dropdownToggle;
+            } else {
+                console.error('Parent dropdown-toggle not found.');
+                return null;
+            }
+        }
+
+        function change_tab(obj){
+            var tab_array = ["set_data","set_route","set_date"];
+    
+            var flag = false;
+            if (obj.classList.contains('dropdown-item')) {
+                // 獲取下拉選單的父元素 id
+                var parent = getParentDropdownToggle(obj);
+                obj = parent;
+                flag = true;
+            }
+
+            for(var i = 0; i < tab_array.length; i++ ){
+                if( obj.id == tab_array[i] ){
+                    var pick_nav_item = document.getElementById(tab_array[i]);
+                    var pick_tab = document.getElementById("tab"+(i+1));
+                    if( flag != true ){ //點選的UI是否是下拉式選單的選項
+                        pick_nav_item.setAttribute("class","nav-link active");
+                        pick_nav_item.setAttribute("aria-current","page");
+                    }
+                    pick_tab.style.display="block";
+                    
+                    for(var j = 0; j < tab_array.length; j++){
+                        if( j != i){
+                            var unpick_nav_item = document.getElementById(tab_array[j]);
+                            var unpick_tab = document.getElementById("tab"+(j+1));
+                            //如果是下拉式選單 未點選時設定特別的class
+                            if (unpick_nav_item.classList.contains('dropdown-toggle')) {
+                                unpick_nav_item.setAttribute("class","nav-link dropdown-toggle show");
+                            }
+                            else{
+                                unpick_nav_item.setAttribute("class","nav-link");
+                                unpick_nav_item.removeAttribute("aria-current");
+                            }
+                            unpick_tab.style.display="none";
+                            //console.log(tab_array[j]);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        /*
+        document.addEventListener('DOMContentLoaded', async function() {
+            // 选择所有需要自动收合的导航链接
+            var navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle), .dropdown-menu .dropdown-item');
+
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    // 如果在手机视图下
+                    if (window.innerWidth <= 767) {
+                        var bootstrapCollapse = new bootstrap.Collapse(document.querySelector('#navbarSupportedContent'), {
+                            toggle: false
+                        });
+                        bootstrapCollapse.hide();
+                    }
+                });
+            });
+
+            const options = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+
+            const response = await fetch("/googlemap/data", options);
+            const json = await response.json();
+            var data = json["log"];
+            console.log(data);
+
+            // Convert date format from "YYYY/MM/DD" to "YYYY-MM-DD"
+            function formatDateString(dateString) {
+                const [year, month, day] = dateString.split('/').map(Number);
+                // Format to "YYYY-MM-DD"
+                return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            }
+
+            // Statistics for each day's request count
+            const requestCountByDate = data.reduce((acc, item) => {
+                const formattedDate = formatDateString(item.RequestDate);
+                if (!acc[formattedDate]) {
+                    acc[formattedDate] = 0;
+                }
+                acc[formattedDate]++;
+                
+                return acc;
+            }, {});
+            
+            // Convert aggregated data into FullCalendar events
+            //console.log(requestCountByDate);
+            const events = Object.keys(requestCountByDate).map(date => ({
+                title: "" + requestCountByDate[date].toString() + "人 預約", // Number of requests as title
+                start: date // Event start time in YYYY-MM-DD format
+            }));
+
+            // Helper function to get events for different views
+            function getMonthlyEvents(data) {
+                // Count requests per day
+                const requestCountByDate = data.reduce((acc, item) => {
+                    const formattedDate = formatDateString(item.RequestDate);
+                    if (!acc[formattedDate]) {
+                        acc[formattedDate] = 0;
+                    }
+                    acc[formattedDate]++;
+                    return acc;
+                }, {});
+
+                // Create events for monthly view
+                return Object.keys(requestCountByDate).map(date => ({
+                    title: `Requests: ${requestCountByDate[date]}`, // Total requests as title
+                    start: date // Event start time in YYYY-MM-DD format
+                }));
+            }
+
+            function getDetailedEvents(data) {
+                // Create detailed events for weekly and daily views
+                return data.map(item => {
+                    const formattedDate = formatDateString(item.RequestDate);
+                    return {
+                        title: `${item.user.Name} - Departure: ${item.DepartureTime}`,
+                        start: `${formattedDate}T${item.DepartureTime}`, // Combining RequestDate and DepartureTime
+                        extendedProps: {
+                            user: item.user,
+                            requestDate: formattedDate,
+                            departureTime: item.DepartureTime
+                        }
+                    };
+                });
+            }
+
+            const calendarEl = document.getElementById("calendar")
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: "dayGridMonth",
+                headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          },
+          buttonText: {
+            today: "Today",
+            month: "Month",
+            week: "Week",
+            day: "Day",
+          },
+                // ----- 本段落新增開始 -----
+                //events: events,
+                events: getMonthlyEvents(data), // Events for month view
+                datesSet: function(info) {
+        // Handle view changes
+        if (info.view.type === 'dayGridMonth') {
+            calendar.removeAllEvents();
+            calendar.addEventSource(getMonthlyEvents(data));
+        } else {
+            calendar.removeAllEvents();
+            calendar.addEventSource(getDetailedEvents(data));
+        }
+    },
+                // ----- 本段落新增結束 -----
+                // ----- 本段落新增開始 -----
+                eventClick: function(info) {
+                    console.log(info.event)
+
+                    Swal.fire({
+                        icon: info.event.allDay ? "success" : "info",
+                        title: info.event.title,
+                        text: info.event.startStr,
+                        confirmButtonText: "OK",
+                    })
+                },
+                // ----- 本段落新增結束 -----
+            })
+            calendar.render();
+
+            //要先render日曆後才可將tab3隱藏
+            var tab3 = document.getElementById("tab3");
+            tab3.style.display="none";
+        });*/
+
+        
+document.addEventListener('DOMContentLoaded', async function() {
+    // 选择所有需要自动收合的导航链接
+    var navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle), .dropdown-menu .dropdown-item');
+
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            // 如果在手机视图下
+            if (window.innerWidth <= 767) {
+                var bootstrapCollapse = new bootstrap.Collapse(document.querySelector('#navbarSupportedContent'), {
+                    toggle: false
+                });
+                bootstrapCollapse.hide();
+            }
+        });
+    });
+
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+
+    const response = await fetch("/googlemap/data", options);
+    const json = await response.json();
+    var data = json["log"];
+    console.log(data);
+
+    function mergeEventsByDay(data) {
+    const eventsByDate = {};
+
+    // 组织数据，按日期分组
+    data.forEach(item => {
+        const date = formatDateString(item.RequestDate);
+        const time = item.DepartureTime;
+        const datetime = `${date}T${time}`;
+
+        if (!eventsByDate[date]) {
+            eventsByDate[date] = [];
+        }
+        eventsByDate[date].push(datetime);
+    });
+
+    const mergedEvents = [];
+
+    // 合并时间差不超过1小时的事件
+    Object.keys(eventsByDate).forEach(date => {
+        const times = eventsByDate[date].sort();
+        let startTime = times[0];
+        let endTime = times[0];
+
+        for (let i = 1; i < times.length; i++) {
+            const currentTime = new Date(times[i]);
+            const lastEndTime = new Date(endTime);
+            lastEndTime.setHours(lastEndTime.getHours() + 1);
+
+            if (currentTime <= lastEndTime) {
+                endTime = times[i];
+            } else {
+                mergedEvents.push({
+                    title: `Request`,
+                    start: startTime,
+                    end: new Date(new Date(endTime).getTime() + (60 * 60 * 1000)).toISOString() // End time is 1 hour later
+                });
+                startTime = times[i];
+                endTime = times[i];
+            }
+        }
+        mergedEvents.push({
+            title: `Request`,
+            start: startTime,
+            end: new Date(new Date(endTime).getTime() + (60 * 60 * 1000)).toISOString() // End time is 1 hour later
+        });
+    });
+
+    return mergedEvents;
+}
+
+
+    // Convert date format from "YYYY/MM/DD" to "YYYY-MM-DD"
+    function formatDateString(dateString) {
+        const [year, month, day] = dateString.split('/').map(Number);
+        // Format to "YYYY-MM-DD"
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    // Helper function to get events for different views
+    function getMonthlyEvents(data) {
+        // Count requests per day
+        const requestCountByDate = data.reduce((acc, item) => {
+            const formattedDate = formatDateString(item.RequestDate);
+            if (!acc[formattedDate]) {
+                acc[formattedDate] = 0;
+            }
+            acc[formattedDate]++;
+            return acc;
+        }, {});
+
+        // Create events for monthly view
+        return Object.keys(requestCountByDate).map(date => ({
+            title: `Requests: ${requestCountByDate[date]}`, // Total requests as title
+            start: date, // Event start time in YYYY-MM-DD format
+            allDay: true, // Mark as all-day event
+            extendedProps: {
+                description: `Request ID: 123465454`,
+                location: `UserID: 1964156`
+            }
+        }));
+    }
+
+    function getDetailedEvents(data) {
+        // Generate detailed events with merging
+        const mergedEvents = mergeEventsByDay(data);
+        return mergedEvents;
+    }
+
+    const calendarEl = document.getElementById("calendar");
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+        },
+        buttonText: {
+            today: "Today",
+            month: "Month",
+            week: "Week",
+            day: "Day",
+        },
+        events: getMonthlyEvents(data), // Initial event source
+
+        datesSet: function(info) {
+            // Handle view changes
+            if (info.view.type === 'dayGridMonth') {
+                calendar.removeAllEvents();
+                calendar.addEventSource(getMonthlyEvents(data));
+            } else {
+                calendar.removeAllEvents();
+                calendar.addEventSource(getDetailedEvents(data));
+            }
+        },
+
+        eventClick: function(info) {
+            Swal.fire({
+                icon: info.event.allDay ? "success" : "info",
+                title: info.event.title,
+                //text: `Start: ${info.event.startStr}\nEnd: ${info.event.endStr}`,
+                html: `Start: ${info.event.startStr}<br>End: ${info.event.endStr}<br>Description: ${info.event.extendedProps.description}<br>Location: ${info.event.extendedProps.location}`,
+                confirmButtonText: "OK",
+            });
+        },
+    });
+
+    calendar.render();
+
+    //要先render日曆後才可將tab3隱藏
+    var tab3 = document.getElementById("tab3");
+    tab3.style.display = "none";
+});
+
+    </script>
+</body>
+</html>

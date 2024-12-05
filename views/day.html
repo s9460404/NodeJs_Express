@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Buttons for FullCalendar</title>
+    <!-- FullCalendar CSS -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.3/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        #calendar-container {
+            width: 100%;
+            height: 80vh; /* Adjust height as needed */
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #custom-buttons {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .custom-button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .custom-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-buttons">
+        <button id="prev-month" class="custom-button">Previous Month</button>
+        <button id="next-month" class="custom-button">Next Month</button>
+        <button id="today" class="custom-button">Today</button>
+        <button id="day-view" class="custom-button">Day View</button>
+        <button id="week-view" class="custom-button">Week View</button>
+        <button id="month-view" class="custom-button">Month View</button>
+    </div>
+
+    <div id="calendar-container">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- FullCalendar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: false, // Hide default header toolbar
+                events: [
+                    { title: 'All Day Event', start: '2024-08-13' },
+                    { title: 'Time Event', start: '2024-08-13 12:00:00' },
+                    { title: 'Time Event2', start: '2024-08-13 12:00:00' },
+                    { title: 'Time Event3', start: '2024-08-13 12:50:00' },
+                    { title: 'Time Event4', start: '2024-08-13 12:50:00' },
+                    { title: 'Time Event5', start: '2024-08-13 12:50:00' },
+                    { title: 'Time Event6', start: '2024-08-13 12:50:00' },
+                    { title: 'Holiday', start: '2024-08-10 12:00:00', end: '2024-08-10 16:00:00', textColor: '#000', className: 'holidayEvent' },
+                    { title: 'Home Page', start: '2024-08-17', url: '網址路徑' },
+                ],
+                eventDisplay: 'background',
+                eventClick: function(info) {
+                    console.log(info.event);
+                    Swal.fire({
+                        icon: info.event.allDay ? 'success' : 'info',
+                        title: info.event.title,
+                        text: info.event.startStr,
+                        confirmButtonText: 'OK',
+                    });
+                }
+            });
+
+            calendar.render();
+
+            // Custom button functionality
+            document.getElementById('prev-month').addEventListener('click', function() {
+                calendar.prev();
+            });
+
+            document.getElementById('next-month').addEventListener('click', function() {
+                calendar.next();
+            });
+
+            document.getElementById('today').addEventListener('click', function() {
+                calendar.today();
+            });
+
+            document.getElementById('day-view').addEventListener('click', function() {
+                calendar.changeView('timeGridDay');
+            });
+
+            document.getElementById('week-view').addEventListener('click', function() {
+                calendar.changeView('timeGridWeek');
+            });
+
+            document.getElementById('month-view').addEventListener('click', function() {
+                calendar.changeView('dayGridMonth');
+            });
+        });
+    </script>
+</body>
+</html>
